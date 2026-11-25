@@ -1,15 +1,15 @@
 # RSI inference benchmarks on 40 GiB A100s
 
-We tested whether two of Apple’s H100 optimization tasks could serve their original checkpoints on A100s, then gave a coding agent one attempt on the qualified GPT baseline. **GPT-OSS qualified on two A100s. Qwen’s assigned single-GPU configuration exceeded device memory, and its two-GPU diagnostic qualified. Neither task produced a modified candidate whose speedup could be measured.**
+We tested two of Apple’s H100 inference optimization tasks on 40 GiB A100s using the original model checkpoints. **GPT-OSS qualified on two A100s. Qwen exceeded the memory of one A100 in its assigned configuration and qualified on two A100s in a separate diagnostic.**
 
-| Task | Original assignment → A100 configuration | Correct positions | Timed requests | A/A ratio | Agent speedup | Outcome |
+| Task | Original assignment → A100 configuration | Correct positions | Timed requests | A/A ratio | Speedup from a patch | Outcome |
 | --- | --- | ---: | ---: | ---: | ---: | --- |
-| [GPT-OSS-120B](tasks/optimize_gpt_oss_120b_2xh100_open/) | 2 × H100 TP=2 → 2 × A100 TP=2, MXFP4 | 1,984 / 2,000 | 5,648 | 1.000010× | N/A | Baseline qualified. One solver attempt reached its context limit and produced an empty patch. |
-| [Qwen3.6-27B](tasks/optimize_qwen3_6_27b_1xh100_open/) | 1 × H100 TP=1 → separate 2 × A100 TP=2 diagnostic, BF16 | 1,990 / 2,000 | 4,104 | 0.999820× | N/A | Assigned TP=1 blocked by memory. TP=2 diagnostic qualified. No solver attempt. |
+| [GPT-OSS-120B](tasks/optimize_gpt_oss_120b_2xh100_open/) | 2 × H100 TP=2 → 2 × A100 TP=2, MXFP4 | 1,984 / 2,000 | 5,648 | 1.000010× | N/A | Baseline qualified. One optimization attempt reached the context limit before producing a patch. |
+| [Qwen3.6-27B](tasks/optimize_qwen3_6_27b_1xh100_open/) | 1 × H100 TP=1 → separate 2 × A100 TP=2 diagnostic, BF16 | 1,990 / 2,000 | 4,104 | 0.999820× | N/A | Assigned TP=1 blocked by memory. TP=2 diagnostic qualified. No optimization attempt. |
 
-Each measured configuration started the model, passed the public teacher-forced correctness check on 20 prompts and completed decode, prefill and high-load serving. The table reports **qualification only**. The two public benchmark passes produced 26 GPT and 18 Qwen timed rows across workloads, concurrency profiles, boots and both comparison arms. Those 44 rows contain 9,752 completed requests and zero request failures. Both arms ran the unchanged engine on the same devices. Their A/A ratios are controls. [Scores and variation by arm](docs/acceptance/variability.md)
+Each measured configuration started the model, passed the public teacher-forced correctness check on 20 prompts and completed decode, prefill and high-load serving. The request counts and A/A ratios in the table come from qualification. The two public benchmark passes produced 26 GPT and 18 Qwen timed rows across workloads, concurrency profiles, boots and both comparison arms. Those 44 rows contain 9,752 completed requests and zero request failures. Both arms ran the unchanged engine on the same devices. Their A/A ratios are controls. [Scores and variation by arm](docs/acceptance/variability.md)
 
-During the GPT attempt the agent profiled the unchanged engine once more, adding 26 rows and 5,648 requests. Its next input exceeded the 32,768-token context window. The in-trial verifier was skipped after the agent error. A fresh local A100 verifier run by the same operator confirmed the empty tree diff and awarded **0.0 reward for `no_patch`** before candidate timing. The original H100 verifier withheld a score on A100. [Solver record](tasks/optimize_gpt_oss_120b_2xh100_open/results/solver-result.json) · [Acceptance and failures](docs/acceptance/README.md)
+After qualification, a separate GPT profiling pass on the unchanged engine added 26 timed rows and 5,648 requests. The next input exceeded the 32,768-token context window, ending the attempt before in-trial verification. The same operator ran the local A100 verifier in a fresh environment. It confirmed the empty diff and awarded **0.0 reward for `no_patch`** before candidate timing. The original H100 verifier withheld a score on A100. [GPT run record](tasks/optimize_gpt_oss_120b_2xh100_open/results/solver-result.json) · [Acceptance and failures](docs/acceptance/README.md)
 
 ## Reproduce and extend the results
 
