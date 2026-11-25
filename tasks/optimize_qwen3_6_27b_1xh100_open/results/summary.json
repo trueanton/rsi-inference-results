@@ -1,0 +1,21 @@
+{
+  "task": "optimize_qwen3_6_27b_1xh100_open",
+  "run_id": "optimize_qwen3_6_27b_1xh100_open_a100-40gb-tp2_diagnostic_20261125T010524Z",
+  "configuration": "qualified_diagnostic",
+  "raw": "raw-measurements.csv",
+  "measured_runs": 18,
+  "completed_requests": 4104,
+  "failed_requests": 0,
+  "paired_unchanged_ratio": 0.99981982,
+  "correct_positions": 1990,
+  "total_positions": 2000,
+  "prompts": 20,
+  "correctness_passed": true,
+  "solver_attempts": 0,
+  "assigned_tp1_status": "blocked_by_device_memory",
+  "bf16_transformer_layer_bytes": 48706393088,
+  "nominal_device_bytes": 42949672960,
+  "slurm_exit": "1:0",
+  "postcheck": "public benchmark completed; independent per-workload audit passed",
+  "native_h100_score": null
+}

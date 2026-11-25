@@ -1,0 +1,14 @@
+name = "optimize_qwen3_6_27b_1xh100_open"
+origin = "Apple RSI-Inference-Bench"
+campaign = "2026-11-25"
+benchmark_revision = "1a38072fbe284234c874356b86c9df666a5a79a3"
+model = "Qwen/Qwen3.6-27B"
+precision = "BF16"
+engine = "vLLM"
+engine_version = "0.20.1"
+assigned_hardware = "1 x H100"
+assigned_tensor_parallelism = 1
+measured_hardware = "2 x NVIDIA A100-SXM4-40GB"
+measured_tensor_parallelism = 2
+measurement = "separate_tensor_parallelism_diagnostic"
+source_optimization_attempts = 0

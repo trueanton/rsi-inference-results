@@ -1,0 +1,14 @@
+name = "optimize_gpt_oss_120b_2xh100_open"
+origin = "Apple RSI-Inference-Bench"
+campaign = "2026-11-25"
+benchmark_revision = "1a38072fbe284234c874356b86c9df666a5a79a3"
+model = "openai/gpt-oss-120b"
+precision = "MXFP4"
+engine = "vLLM"
+engine_version = "0.19.1"
+assigned_hardware = "2 x H100"
+assigned_tensor_parallelism = 2
+measured_hardware = "2 x NVIDIA A100-SXM4-40GB"
+measured_tensor_parallelism = 2
+measurement = "hardware_port_baseline"
+source_optimization_attempts = 1

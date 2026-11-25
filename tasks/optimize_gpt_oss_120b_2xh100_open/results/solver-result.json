@@ -1,0 +1,48 @@
+{
+  "solver": "mini-swe-agent 2.4.6",
+  "model": "openai/gpt-oss-120b",
+  "attempts": 1,
+  "exit_status": "BadRequestError",
+  "calls_with_provider_usage": 37,
+  "prompt_tokens": 716395,
+  "completion_tokens": 7345,
+  "started": "2026-11-25T01:44:47.473826+00:00",
+  "ended": "2026-11-25T04:17:50.524026+00:00",
+  "wall_seconds": 9183.0502,
+  "external_api_cost_usd": 0,
+  "in_trial_verifier_ran": false,
+  "context_limit_tokens": 32768,
+  "rejected_request_input_tokens": 32812,
+  "committed_patch_bytes": 0,
+  "uncommitted_patch_bytes": 0,
+  "final_verifier": {
+    "reason": "no_patch",
+    "classification": "empty",
+    "rewards": {
+      "correctness": 0.0,
+      "performance": 0.0,
+      "reward": 0.0
+    },
+    "tree_proof": {
+      "solver_commit": "09db7a3a00b1f52e87413d2fed3081e36f9e5e68",
+      "solver_base_commit": "09db7a3a00b1f52e87413d2fed3081e36f9e5e68",
+      "fresh_commit": "edd4e3495ced138d6e0e2744a82596d100b2478f",
+      "fresh_base_commit": "edd4e3495ced138d6e0e2744a82596d100b2478f",
+      "archived_tree": "a2748086c60be2c6f6f150d02f3a7c0811a65dad",
+      "fresh_tree": "a2748086c60be2c6f6f150d02f3a7c0811a65dad",
+      "working_tree_clean": true
+    }
+  },
+  "additional_unchanged_profiling": {
+    "candidate": {
+      "measurements": 13,
+      "completed": 2824,
+      "failed": 0
+    },
+    "pristine": {
+      "measurements": 13,
+      "completed": 2824,
+      "failed": 0
+    }
+  }
+}

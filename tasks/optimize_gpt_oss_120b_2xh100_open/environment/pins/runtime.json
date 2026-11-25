@@ -1,0 +1,26 @@
+{
+  "model": "openai/gpt-oss-120b",
+  "model_revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+  "vllm_version": "0.19.1",
+  "vllm_revision": "b1388b1fbf5aaef47937fabe98931211684666a6",
+  "benchmark_revision": "1a38072fbe284234c874356b86c9df666a5a79a3",
+  "container_image_config_sha256": "d3e6fc66e986fc1812fc036c75e1aca3431fb9cb13486edf69f83387a0120d20",
+  "measured_engine_tree": "a2748086c60be2c6f6f150d02f3a7c0811a65dad",
+  "gpus": 2,
+  "tensor_parallelism": 2,
+  "context_tokens": 16384,
+  "cpus": 32,
+  "host_memory_gib": 240,
+  "shared_memory_gib": 16,
+  "driver": "570.195.03",
+  "torch": "2.10.0+cu128",
+  "warmups": 2,
+  "decode_boots": 2,
+  "measured_repetitions": {
+    "decode_heavy": 1,
+    "prefill_heavy": 5,
+    "high_load_per_concurrency": 2
+  },
+  "benchmark_gpu_memory_utilization": 0.95,
+  "VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS": "1"
+}

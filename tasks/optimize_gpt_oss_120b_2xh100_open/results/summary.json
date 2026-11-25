@@ -1,0 +1,18 @@
+{
+  "task": "optimize_gpt_oss_120b_2xh100_open",
+  "run_id": "optimize_gpt_oss_120b_2xh100_open_a100-40gb-tp2_graph-aware-memory95_20261124T215930Z",
+  "configuration": "qualified_unchanged_baseline",
+  "raw": "raw-measurements.csv",
+  "measured_runs": 26,
+  "completed_requests": 5648,
+  "failed_requests": 0,
+  "paired_unchanged_ratio": 1.0000101,
+  "correct_positions": 1984,
+  "total_positions": 2000,
+  "prompts": 20,
+  "correctness_passed": true,
+  "solver_attempts": 1,
+  "agent_outcome": "no_patch",
+  "local_optimization_reward": 0.0,
+  "native_h100_score": null
+}
