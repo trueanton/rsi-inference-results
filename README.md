@@ -6,6 +6,17 @@
 
 The A100 campaign ran the same public workloads on 40 GiB GPUs. GPT required different memory settings. Qwen exceeded the capacity of one A100 and qualified separately on two. Each hardware report links to its own run records.
 
+## Published reference results
+
+Apple compares an agent-modified engine with the pristine task baseline on the same GPUs and checks correctness before awarding a speedup. Both tasks allow about 8.3 hours of agent time. [Pinned Apple leaderboard](https://github.com/apple-aiml-research/ml-rsi-inference-bench/blob/1a38072fbe284234c874356b86c9df666a5a79a3/docs/leaderboard.html)
+
+| Task and assigned hardware | Best agent on Apple’s leaderboard | Published speedup vs. task baseline | Our H100 status |
+| --- | --- | ---: | --- |
+| Qwen3.6-27B · 1 × H100 | Sonnet-5.5 | 1.385× | Baseline qualified; agent optimization not yet evaluated. |
+| GPT-OSS-120B · 2 × H100 | Opus-5.5 | 1.382× | Baseline qualified; agent optimization not yet evaluated. |
+
+Our H100 campaign measured unchanged baselines. We have not reproduced Apple’s optimization results. The A100–H100 ratios below compare complete serving configurations.
+
 ## Side-by-side comparison
 
 The tables compare the pristine arm of each qualification run. Concurrency (c) is the maximum number of requests in flight. Both campaigns used the same benchmark revision, input/output lengths and repetitions per model. The prompt seeds differed between clusters. Prefill latency averages the middle three of five repetition medians. The arrows show the favorable direction for each metric.
