@@ -149,6 +149,52 @@ def verify_task(folder):
     return len(rows), total
 
 
+# Each metric is rounded only after aggregation for the published tables.
+PROFILE_METRICS = (
+    ("requests_per_s", "request_throughput", 4),
+    ("total_tokens_per_s", "total_token_throughput", 2),
+    ("output_tokens_per_s", "output_throughput", 2),
+    ("median_ttft_ms", "median_ttft_ms", 2),
+    ("median_tpot_ms", "median_tpot_ms", 2),
+)
+
+
+def verify_profile_tables(task_dir, model, profiles):
+    with (task_dir / "results/raw-measurements.csv").open(newline="") as stream:
+        a100 = defaultdict(list)
+        for row in csv.DictReader(stream):
+            if row["side"] == "pristine":
+                a100[row["workload"], row["max_concurrency"]].append(row)
+    reports = {gpu: (ROOT / f"docs/{gpu}.md").read_text().splitlines() for gpu in ("a100", "h100")}
+    readme = (ROOT / "README.md").read_text()
+    heading = f"### {model} ·"
+    require(readme.count(heading) == 1, f"Missing or duplicate README section for {model}")
+    section = readme.split(heading)[1].split("\n#")[0].splitlines()
+    for h100 in profiles:
+        workload, c = h100["workload"], h100["concurrency"]
+        samples = a100[workload, c]
+        require(len(samples) == int(h100["measured_repetitions"]), f"{model}/{workload}: repetition mismatch")
+        # Prefill returns only one token and has no TPOT.
+        cells = {"a100": {}, "h100": {}}
+        for field, source, decimals in PROFILE_METRICS:
+            if workload == "prefill_heavy" and field == "median_tpot_ms":
+                cells["a100"][field] = cells["h100"][field] = "—"
+                continue
+            a = trimmed_mean([float(r[source]) for r in samples])
+            cells["a100"][field] = f"{a:,.{decimals}f}"
+            cells["h100"][field] = f"{float(h100[field]):,.{decimals}f}"
+        for gpu, values in cells.items():
+            row = [model, workload.replace("_", " "), c, *values.values()]
+            require("| " + " | ".join(row) + " |" in reports[gpu], f"{gpu}/{model}/{workload}/c{c}: stale profile table")
+        label, metric, field = {
+            "decode_heavy": ("Decode", "Time per output token (ms/token) ↓", "median_tpot_ms"),
+            "prefill_heavy": ("Prefill", "Time to first token (ms) ↓", "median_ttft_ms"),
+            "high_load": ("High load", "Requests/s ↑", "requests_per_s"),
+        }[workload]
+        row = [f"{label}, c{c}", metric, cells["a100"][field], cells["h100"][field]]
+        require("| " + " | ".join(row) + " |" in section, f"{model}/{workload}/c{c}: stale README comparison")
+
+
 def verify_h100(outcome):
     task = outcome["task"]
     folder = ROOT / "tasks" / task / "results/h100" / outcome["run_id"]
@@ -207,6 +253,14 @@ def verify_h100(outcome):
     require(summary["solver_attempts"] == int(outcome["solver_attempts"]) == 0 and summary["agent_speedup"] is None and
             summary["native_verifier"] == {"classification_kind": "empty", "reason": "no_patch"},
             f"{task}: inconsistent H100 baseline outcome")
+    task_dir = ROOT / "tasks" / task
+    display_model = {"openai/gpt-oss-120b": "GPT-OSS-120B", "Qwen/Qwen3.6-27B": "Qwen3.6-27B"}[model["id"]]
+    require(all(r["model"] == display_model for r in rows), f"{task}: profile model mismatch")
+    a100 = json.loads((task_dir / "environment/pins/runtime.json").read_text())
+    for h_key, a_key in (("benchmark_revision", "benchmark_revision"), ("engine_revision", "vllm_revision"),
+                         ("measured_engine_tree", "measured_engine_tree")):
+        require(summary["runtime"][h_key] == a100[a_key], f"{task}: cross-campaign {h_key} differs")
+    verify_profile_tables(task_dir, display_model, rows)
     print(f"H100 job {job['job_id']}: {len(rows)} pristine profiles, {2 * requests:,} reported requests across both arms")
 
 
@@ -222,6 +276,7 @@ def main():
             "Expected one assigned H100 baseline per task")
     for outcome in h100:
         verify_h100(outcome)
+    print("Checked the pristine-arm comparison tables against both hardware exports.")
 
 
 if __name__ == "__main__":

@@ -1,4 +1,10 @@
-# Qwen3.6-27B on 40 GiB A100s
+# Qwen3.6-27B on H100 and A100
+
+## H100 qualification
+
+Job 543431 completed on 1 × H100 at TP=1. It passed correctness on 1,994/2,000 positions and completed 4,104 measured requests across both unchanged arms. The original verifier returned `no_patch`. [Run record](results/h100/optimize_qwen3_6_27b_1xh100_open_h100_baseline_20261125T103758Z_543431/summary.json) · [Pristine-arm timings](results/h100/optimize_qwen3_6_27b_1xh100_open_h100_baseline_20261125T103758Z_543431/pristine-profiles.csv) · [H100 measurement notes](../../docs/h100.md)
+
+## A100 qualification
 
 **Assigned single-GPU task:** The 64 transformer layers alone contain 48,706,393,088 BF16 bytes. A 40 GiB device has 42,949,672,960 nominal bytes. That leaves a 5,756,720,128-byte deficit before embeddings, KV cache and workspace.
 
@@ -29,7 +35,3 @@ The single decode observation was 23.77341 ms/token in the candidate arm and 23.
 The clean image matched all 200 upstream Qwen package pins. Its pip check reported two conflicts with Torch 2.11.0+cu128, for CUDA bindings and toolkit versions. The earlier image and its derivative rebuilds reused GPT dependencies. Their measurements were excluded. [Environment pins](environment/pins/runtime.json) · [Dependency check](results/pip-check.txt)
 
 Both correctness children exited successfully and the benchmark wrote its paired results. Slurm recorded exit 1 after the operator postcheck raised `KeyError: 'mode'`. The Qwen helper records its live pristine baseline per workload. The same operator verified all 18 saved measurements against those records. [Correctness output](results/correctness.json) · [Recovery record](results/postcheck-recovery.json) · [GPU rerun guide](../../RUN.md)
-
-## H100 qualification
-
-Job 543431 completed on 1 × H100 at TP=1. It passed correctness on 1,994/2,000 positions and completed 4,104 measured requests across both unchanged arms. The original verifier returned `no_patch`. [Run record](results/h100/optimize_qwen3_6_27b_1xh100_open_h100_baseline_20261125T103758Z_543431/summary.json) · [Pristine-arm timings](results/h100/optimize_qwen3_6_27b_1xh100_open_h100_baseline_20261125T103758Z_543431/pristine-profiles.csv) · [H100 measurement notes](../../docs/h100.md)

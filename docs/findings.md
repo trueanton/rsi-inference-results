@@ -1,5 +1,11 @@
 # Findings
 
+## H100 baseline outcome
+
+Both tasks qualified on the assigned GPU counts. The Qwen single-H100 result establishes that the full BF16 checkpoint and all public workloads fit in the assigned configuration. The GPT run completed MXFP4 inference across two H100s. Its unchanged first arm averaged 216.14 output tokens/s in heavy decode, while the pristine arm averaged 199.61. The source tree was clean and the cause of this difference remains unresolved. [H100 measurements and run records](h100.md)
+
+## A100 baseline outcome
+
 **GPT-OSS-120B ran at TP=2 with the original MXFP4 weights.** The 80% memory budget left a 4.24 GiB KV-cache deficit on the A100 pair. At 95% the sampler still ran out of memory during startup. Accounting for CUDA graph memory within the 95% budget let both arms start and finish the public tests. The benchmark measured the same engine on both sides. Its prefill ratio was 1.003586× and its high-load ratio was 0.996447×. Their opposing deviations largely cancel in the 1.000010× geometric mean. The per-arm repetition data are the basis for describing variability. [GPT task card](../tasks/optimize_gpt_oss_120b_2xh100_open/) · [Repetition statistics](acceptance/variability.md)
 
 **The assigned Qwen3.6-27B TP=1 configuration exceeded device capacity.** Its BF16 language layers alone occupy 48,706,393,088 bytes on a device with 42,949,672,960 nominal bytes. The separately qualified TP=2 diagnostic retained the full checkpoint and completed 4,104 timed requests at an A/A ratio of 0.999820×. The single observations for decode and each high-load concurrency in each arm leave their between-repetition variability unknown. [Qwen task card](../tasks/optimize_qwen3_6_27b_1xh100_open/)
@@ -17,7 +23,3 @@ This experiment is planned. The original unsuccessful attempt remains the refere
 3. Record the solver model and revision, agent version, system prompt, config diff, context and output limits, temperature, reasoning effort, time/token budgets, retry policy and stop conditions. The original used mini-SWE-agent 2.4.6, the pinned local GPT-OSS-120B model, 32,768 context tokens, up to 3,072 output tokens, temperature 0.6, medium reasoning, 30,000 s for the agent and 18,000 s for verification. Treat any history-handling or budget change as part of the new experiment.
 4. Save the trajectory, token usage and stop reason. After each attempted edit, save the intermediate patch and its base tree, including edits later reverted. Freeze the final committed and working-tree diffs.
 5. Reconstruct the final tree in a fresh environment. Record the edit classification, correctness and paired workload timings for a qualifying candidate. Report local verifier reward separately from measured speedup and preserve negative or empty outcomes.
-
-## H100 baseline outcome
-
-Both tasks qualified on the assigned GPU counts. The Qwen single-H100 result establishes that the full BF16 checkpoint and all public workloads fit in the assigned configuration. The GPT run completed MXFP4 inference across two H100s. Its unchanged first arm averaged 216.14 output tokens/s in heavy decode, while the pristine arm averaged 199.61. The source tree was clean and the cause of this difference remains unresolved. [H100 measurements and run records](h100.md)
