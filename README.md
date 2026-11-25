@@ -1,26 +1,40 @@
 # RSI inference benchmarks on A100 and H100
 
-Both original H100 assignments qualified. Qwen3.6-27B ran on one H100 and GPT-OSS-120B ran on two. Every timed request completed across both unchanged-engine arms.
+**[A100 results](docs/a100.md)** · **[H100 results](docs/h100.md)**
 
-| H100 baseline | Slurm job | Correct positions | Timed requests, both arms | A/A ratio |
-| --- | ---: | ---: | ---: | ---: |
-| Qwen3.6-27B, TP=1 | 543431 | 1,994 / 2,000 | 4,104 | 0.993442× |
-| GPT-OSS-120B, TP=2 | 543515 | 2,000 / 2,000 | 5,648 | 1.030606× |
+Each GPU report lists throughput, latency, correctness and Slurm jobs for Qwen3.6-27B and GPT-OSS-120B. The tables below compare the pristine qualification arm from each campaign. All four measured configurations completed every timed request.
 
-The H100 campaign covered baseline qualification. The native verifier returned `no_patch` for both tasks. GPT-OSS showed an 8.23% decode difference between unchanged arms across two boots per arm. [H100 throughput, latency and run records](docs/h100.md)
+## Side-by-side comparison
 
-## A100 port and optimization attempt
+Concurrency (c) is the maximum number of requests in flight. Lower latency (↓) and higher throughput (↑) are better. Both campaigns used the same input and output lengths and repetition counts per model. The prefill values average the middle three of five repetition medians.
 
-We tested two of Apple’s H100 inference optimization tasks on 40 GiB A100s using the original model checkpoints. **GPT-OSS qualified on two A100s. Qwen exceeded the memory of one A100 in its assigned configuration and qualified on two A100s in a separate diagnostic.**
+### Qwen3.6-27B · BF16
 
-| Task | Original assignment → A100 configuration | Correct positions | Timed requests | A/A ratio | Speedup from a patch | Outcome |
-| --- | --- | ---: | ---: | ---: | ---: | --- |
-| [GPT-OSS-120B](tasks/optimize_gpt_oss_120b_2xh100_open/) | 2 × H100 TP=2 → 2 × A100 TP=2, MXFP4 | 1,984 / 2,000 | 5,648 | 1.000010× | N/A | Baseline qualified. One optimization attempt reached the context limit before producing a patch. |
-| [Qwen3.6-27B](tasks/optimize_qwen3_6_27b_1xh100_open/) | 1 × H100 TP=1 → separate 2 × A100 TP=2 diagnostic, BF16 | 1,990 / 2,000 | 4,104 | 0.999820× | N/A | Assigned TP=1 blocked by memory. TP=2 diagnostic qualified. No optimization attempt. |
+One 40 GiB A100 could not fit the checkpoint. The A100 column uses the two-GPU diagnostic at TP=2. The H100 column uses the assigned single 80 GB GPU at TP=1. Both ran the same checkpoint revision.
 
-Each measured configuration started the model, passed the public teacher-forced correctness check on 20 prompts and completed decode, prefill and high-load serving. The request counts and A/A ratios in the table come from qualification. The two public benchmark passes produced 26 GPT and 18 Qwen timed rows across workloads, concurrency profiles, boots and both comparison arms. Those 44 rows contain 9,752 completed requests and zero request failures. Both arms ran the unchanged engine on the same devices. Their A/A ratios are controls. [Scores and variation by arm](docs/acceptance/variability.md)
+| Workload | Metric | 2 × A100 | 1 × H100 |
+| --- | --- | ---: | ---: |
+| Decode, c1 | Time per output token (ms) ↓ | 23.77 | 20.52 |
+| Prefill, c1 | Time to first token (ms) ↓ | 1,203.60 | 711.19 |
+| High load, c16 | Requests/s ↑ | 0.5200 | 0.6477 |
+| High load, c32 | Requests/s ↑ | 0.8716 | 1.1171 |
+| High load, c64 | Requests/s ↑ | 1.1096 | 1.4641 |
 
-After qualification, a separate GPT profiling pass on the unchanged engine added 26 timed rows and 5,648 requests. The next input exceeded the 32,768-token context window, ending the attempt before in-trial verification. The same operator ran the local A100 verifier in a fresh environment. It confirmed the empty diff and awarded **0.0 reward for `no_patch`** before candidate timing. The original H100 verifier withheld a score on A100. [GPT run record](tasks/optimize_gpt_oss_120b_2xh100_open/results/solver-result.json) · [Acceptance and failures](docs/acceptance/README.md)
+At concurrency 64 the H100 configuration served 1.32× as many requests per second. At concurrency 16 and 32 it also served more requests per second, but requests waited longer for their first token. At concurrency 16, for example, median TTFT was 525 ms on the A100 pair and 1,022 ms on the H100.
+
+### GPT-OSS-120B · MXFP4
+
+Both runs used two GPUs at TP=2. A100 used checkpoint revision `b5c939de`, 95% GPU memory utilization and Marlin MXFP4. H100 used revision `bc75b44b`, 80% utilization and Triton MXFP4. These differences matter when attributing the gap to hardware.
+
+| Workload | Metric | 2 × A100 | 2 × H100 |
+| --- | --- | ---: | ---: |
+| Decode, c1 | Time per output token (ms) ↓ | 6.11 | 5.00 |
+| Prefill, c1 | Time to first token (ms) ↓ | 646.72 | 163.98 |
+| High load, c16 | Requests/s ↑ | 1.1415 | 1.9348 |
+| High load, c32 | Requests/s ↑ | 1.5029 | 3.0272 |
+| High load, c64 | Requests/s ↑ | 1.5062 | 4.5528 |
+
+At concurrency 64 the H100 pair served 3.02× as many requests per second as the A100 pair. These are baseline configuration comparisons. The A100 GPT solver attempt produced an empty patch, and the H100 campaign measured the unchanged engine.
 
 ## Reproduce and extend the results
 
