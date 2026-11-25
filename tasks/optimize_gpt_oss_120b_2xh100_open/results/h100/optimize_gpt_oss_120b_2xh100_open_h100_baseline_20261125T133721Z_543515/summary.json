@@ -56,7 +56,8 @@
   },
   "native_verifier": {
     "classification_kind": "empty",
-    "reason": "no_patch"
+    "reason": "no_patch",
+    "reward": 0.0
   },
   "solver_attempts": 0,
   "agent_speedup": null,
@@ -64,6 +65,14 @@
     "candidate": [
       216.15795544869533,
       216.12700497193774
+    ],
+    "pristine": [
+      199.80702863644507,
+      199.41398943043498
     ]
+  },
+  "sampled_peak_memory_mib_by_device": {
+    "0": 79807,
+    "1": 79807
   }
 }

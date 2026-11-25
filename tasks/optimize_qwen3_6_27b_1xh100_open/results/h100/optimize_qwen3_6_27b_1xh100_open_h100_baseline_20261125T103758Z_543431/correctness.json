@@ -1,0 +1,153 @@
+{
+  "comparison": "teacher_forced_logprobs",
+  "num_prompts": 20,
+  "num_positions_total": 2000,
+  "num_positions_passing": 1994,
+  "overall_pass_rate": 0.997,
+  "correctness_ok": true,
+  "max_drift": 0.14355862140655518,
+  "atol": 0.05,
+  "rtol": 0.05,
+  "per_prompt": [
+    {
+      "prompt_idx": 0,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.0801268219947815
+    },
+    {
+      "prompt_idx": 1,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.0715101957321167
+    },
+    {
+      "prompt_idx": 2,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.0
+    },
+    {
+      "prompt_idx": 3,
+      "n_positions": 100,
+      "n_passing": 99,
+      "pass_rate": 0.99,
+      "max_drift": 0.10097736120223999
+    },
+    {
+      "prompt_idx": 4,
+      "n_positions": 100,
+      "n_passing": 99,
+      "pass_rate": 0.99,
+      "max_drift": 0.14355862140655518
+    },
+    {
+      "prompt_idx": 5,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.07481694221496582
+    },
+    {
+      "prompt_idx": 6,
+      "n_positions": 100,
+      "n_passing": 99,
+      "pass_rate": 0.99,
+      "max_drift": 0.10695397853851318
+    },
+    {
+      "prompt_idx": 7,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.07534646987915039
+    },
+    {
+      "prompt_idx": 8,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.061829179525375366
+    },
+    {
+      "prompt_idx": 9,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.061829179525375366
+    },
+    {
+      "prompt_idx": 10,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.08252906799316406
+    },
+    {
+      "prompt_idx": 11,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.03935730457305908
+    },
+    {
+      "prompt_idx": 12,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.05472087860107422
+    },
+    {
+      "prompt_idx": 13,
+      "n_positions": 100,
+      "n_passing": 98,
+      "pass_rate": 0.98,
+      "max_drift": 0.08830317854881287
+    },
+    {
+      "prompt_idx": 14,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.08401572704315186
+    },
+    {
+      "prompt_idx": 15,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.05044138431549072
+    },
+    {
+      "prompt_idx": 16,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.06433212757110596
+    },
+    {
+      "prompt_idx": 17,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.08190536499023438
+    },
+    {
+      "prompt_idx": 18,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.09727585315704346
+    },
+    {
+      "prompt_idx": 19,
+      "n_positions": 100,
+      "n_passing": 99,
+      "pass_rate": 0.99,
+      "max_drift": 0.14355862140655518
+    }
+  ]
+}

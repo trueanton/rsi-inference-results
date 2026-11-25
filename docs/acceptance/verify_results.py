@@ -1,5 +1,6 @@
 """Recompute paired A/A scores and verify workload coverage using only the standard library."""
 import csv
+import gzip
 import hashlib
 import json
 import math
@@ -79,6 +80,16 @@ def read_measurements(data, filename="raw-measurements.csv"):
     return rows
 
 
+def verify_correctness(data, recorded):
+    correctness = json.loads((data / "correctness.json").read_text())
+    per_prompt = correctness["per_prompt"]
+    require(correctness["correctness_ok"] is recorded["correctness_passed"] is True and
+            len(per_prompt) == correctness["num_prompts"] == recorded["prompts"] and
+            sum(p["n_passing"] for p in per_prompt) == correctness["num_positions_passing"] == recorded["correct_positions"] and
+            sum(p["n_positions"] for p in per_prompt) == correctness["num_positions_total"] == recorded["total_positions"],
+            "Correctness evidence mismatch")
+
+
 def verify_task(folder):
     data = folder / "results"
     recorded = json.loads((data / "summary.json").read_text())
@@ -90,13 +101,7 @@ def verify_task(folder):
     require(f"random-prompt seed: {pins['benchmark_seed']} " in (data / "benchmark-settings.txt").read_text(),
             "Benchmark seed mismatch")
     rows = read_measurements(data, recorded["raw"])
-    correctness = json.loads((data / "correctness.json").read_text())
-    per_prompt = correctness["per_prompt"]
-    require(correctness["correctness_ok"] is recorded["correctness_passed"] is True and
-            len(per_prompt) == correctness["num_prompts"] == recorded["prompts"] and
-            sum(p["n_passing"] for p in per_prompt) == correctness["num_positions_passing"] == recorded["correct_positions"] and
-            sum(p["n_positions"] for p in per_prompt) == correctness["num_positions_total"] == recorded["total_positions"],
-            "Correctness evidence mismatch")
+    verify_correctness(data, recorded)
     require(recorded["agent_speedup"] is None and recorded["native_h100_score"] is None, "Unexpected score")
     require(len(rows) == recorded["measured_runs"], "Unexpected measurement count")
     require(len({row["evidence"] for row in rows}) == len(rows), "Duplicate archived measurement")
@@ -195,6 +200,69 @@ def verify_profile_tables(task_dir, model, profiles):
         require("| " + " | ".join(row) + " |" in section, f"{model}/{workload}/c{c}: stale README comparison")
 
 
+def verify_h100_evidence(folder, summary, pristine):
+    rows = read_measurements(folder)
+    groups = defaultdict(list)
+    for r in rows:
+        groups[r["side"], r["workload"], int(r["max_concurrency"])].append(r)
+    expected = {(side, r["workload"], int(r["concurrency"])) for side in SIDES for r in pristine}
+    require(set(groups) == expected and len(rows) == summary["measured_runs"], "H100 timed profile coverage mismatch")
+    require(sum(int(r["completed"]) for r in rows) == summary["completed_requests"], "H100 raw request total differs")
+    with (folder / "paired-profiles.csv").open(newline="") as stream:
+        paired = list(csv.DictReader(stream))
+    require(len(paired) == len(expected) and {(p["arm"], p["workload"], int(p["concurrency"])) for p in paired} == expected,
+            "Invalid H100 paired profile export")
+    pristine_by_profile = {(r["workload"], int(r["concurrency"])): r for r in pristine}
+    fields = {"request_throughput": "requests_per_s", "output_throughput": "output_tokens_per_s",
+              "total_token_throughput": "total_tokens_per_s", "median_ttft_ms": "median_ttft_ms",
+              "median_tpot_ms": "median_tpot_ms", "p99_ttft_ms": None, "p99_tpot_ms": None}
+    for profile in paired:
+        arm, workload, concurrency = profile["arm"], profile["workload"], int(profile["concurrency"])
+        group = groups[arm, workload, concurrency]
+        require(len(group) == int(profile["repetitions"]) and all(r["num_prompts"] == profile["requests_per_repetition"]
+                for r in group), "H100 profile request or repetition count mismatch")
+        for key, public_key in fields.items():
+            if workload == "prefill_heavy" and "tpot" in key:
+                require(profile[key] == "", "Expected empty TPOT for one generated token")
+                continue
+            value = trimmed_mean([float(r[key]) for r in group])
+            require(math.isclose(value, float(profile[key]), rel_tol=1e-12), f"H100 raw {key} differs for {profile}")
+            if arm == "pristine" and public_key:
+                require(math.isclose(value, float(pristine_by_profile[workload, concurrency][public_key]), rel_tol=1e-12),
+                        f"H100 pristine {key} differs")
+    bench = json.loads((folder / "bench.json").read_text())
+    reps = bench["num_runs"]
+    pins = {"decode_boots": bench["boots"]["decode_heavy"], "measured_repetitions": {
+        "decode_heavy": reps["decode_heavy"], "prefill_heavy": reps["prefill_heavy"],
+        "high_load_per_concurrency": reps["high_load"]}}
+    arms = {}
+    for side in SIDES:
+        arms[side] = scores_for_side(summary["task"], [r for r in rows if r["side"] == side], pins)
+        for name, score in arms[side].items():
+            ref = bench["per_workload"][name][side + "_stats"]["trimmed_mean"]
+            require(math.isclose(score, ref, rel_tol=1e-12), f"H100 {side}/{name} differs from bench.json")
+        observed_boots = [float(r["output_throughput"]) for r in sorted(groups[side, "decode_heavy", 1],
+                                                                        key=lambda r: r["evidence"])]
+        require(observed_boots == summary["decode_boot_output_tokens_per_s"][side], f"H100 {side} decode boots differ")
+    ratios = [arms["candidate"][w] / arms["pristine"][w] for w in WORKLOADS]
+    for name, ratio in zip(WORKLOADS, ratios):
+        require(math.isclose(ratio, summary["workload_ratios"][name], rel_tol=1e-12), f"H100 {name} ratio differs")
+    require(math.isclose(geometric_mean(ratios), bench["speedup_geomean"], rel_tol=1e-12), "H100 raw paired score differs")
+    verify_correctness(folder, summary)
+    native = json.loads((folder / "verifier-metrics.json").read_text())
+    reward = json.loads((folder / "reward.json").read_text())
+    require(native["classification_kind"] == "empty" and native["reason"] == "no_patch" and reward["reward"] == 0 and
+            summary["native_verifier"] == {"classification_kind": native["classification_kind"],
+                                           "reason": native["reason"], "reward": reward["reward"]}, "H100 edit gate mismatch")
+    peaks = {}
+    with gzip.open(folder / "gpu-samples-5s.csv.gz", "rt", newline="") as stream:
+        for sample in csv.DictReader(stream):
+            device = sample["device"]
+            peaks[device] = max(peaks.get(device, 0), int(sample["memory_used_mib"]))
+    require(peaks == summary["sampled_peak_memory_mib_by_device"] and len(peaks) == summary["hardware"]["gpu_count"],
+            "H100 telemetry peak mismatch")
+
+
 def verify_h100(outcome):
     task = outcome["task"]
     folder = ROOT / "tasks" / task / "results/h100" / outcome["run_id"]
@@ -250,8 +318,7 @@ def verify_h100(outcome):
     require(set(ratios) == set(WORKLOADS) and math.isclose(geometric_mean(ratios.values()), summary["paired_unchanged_ratio"])
             and math.isclose(float(outcome["paired_speedup"]), summary["paired_unchanged_ratio"], rel_tol=0, abs_tol=5e-8),
             f"{task}: reported H100 A/A ratios differ")
-    require(summary["solver_attempts"] == int(outcome["solver_attempts"]) == 0 and summary["agent_speedup"] is None and
-            summary["native_verifier"] == {"classification_kind": "empty", "reason": "no_patch"},
+    require(summary["solver_attempts"] == int(outcome["solver_attempts"]) == 0 and summary["agent_speedup"] is None,
             f"{task}: inconsistent H100 baseline outcome")
     task_dir = ROOT / "tasks" / task
     display_model = {"openai/gpt-oss-120b": "GPT-OSS-120B", "Qwen/Qwen3.6-27B": "Qwen3.6-27B"}[model["id"]]
@@ -261,7 +328,8 @@ def verify_h100(outcome):
                          ("measured_engine_tree", "measured_engine_tree")):
         require(summary["runtime"][h_key] == a100[a_key], f"{task}: cross-campaign {h_key} differs")
     verify_profile_tables(task_dir, display_model, rows)
-    print(f"H100 job {job['job_id']}: {len(rows)} pristine profiles, {2 * requests:,} reported requests across both arms")
+    verify_h100_evidence(folder, summary, rows)
+    print(f"H100 job {job['job_id']}: {2 * measured} raw timings, {2 * requests:,} verified requests across both arms")
 
 
 def main():

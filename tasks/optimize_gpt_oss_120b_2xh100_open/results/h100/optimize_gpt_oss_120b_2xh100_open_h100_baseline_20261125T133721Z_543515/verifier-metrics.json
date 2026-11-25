@@ -1,0 +1,41 @@
+{
+  "agent_notes": {
+    "copied": [],
+    "copied_count": 0,
+    "dest": "agent_notes",
+    "skipped": [],
+    "skipped_count": 0,
+    "total_bytes": 0
+  },
+  "candidate_capture": {
+    "captured_file_count": 0,
+    "captured_paths": [],
+    "captured_paths_omitted": 0,
+    "excluded_file_count": 0,
+    "status": "nothing_to_capture"
+  },
+  "classification": {
+    "config_files_touched": [],
+    "doc_files_touched": [],
+    "files_touched": [],
+    "invocation_files_touched": [],
+    "kind": "empty",
+    "reason": "diff is empty",
+    "source_files_touched": [],
+    "test_files_touched": []
+  },
+  "classification_kind": "empty",
+  "correctness_plan": {
+    "fail_missing": false,
+    "mode": "loose",
+    "ref": "live",
+    "run": true
+  },
+  "error": "no patch applied",
+  "model_path": "/model",
+  "num_workloads": 3,
+  "reason": "no_patch",
+  "venv": "/opt/venv",
+  "verifier_mode": "real_engine",
+  "workloads_source": "/tests/workloads.json"
+}

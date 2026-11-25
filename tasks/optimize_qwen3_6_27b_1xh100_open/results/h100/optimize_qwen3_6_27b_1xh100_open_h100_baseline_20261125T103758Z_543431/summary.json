@@ -60,8 +60,20 @@
   },
   "native_verifier": {
     "classification_kind": "empty",
-    "reason": "no_patch"
+    "reason": "no_patch",
+    "reward": 0.0
   },
   "solver_attempts": 0,
-  "agent_speedup": null
+  "agent_speedup": null,
+  "sampled_peak_memory_mib_by_device": {
+    "0": 71007
+  },
+  "decode_boot_output_tokens_per_s": {
+    "candidate": [
+      47.86397594964161
+    ],
+    "pristine": [
+      48.71789508866984
+    ]
+  }
 }

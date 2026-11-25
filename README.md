@@ -38,9 +38,13 @@ Both runs used two GPUs at TP=2 and the same vLLM source tree. The two model rev
 
 At concurrency 64 the H100 pair served 3.02× as many requests per second as the A100 pair. That ratio compares the two complete serving configurations. Within the H100 run itself, the unchanged arms differed by 8.23% on the decode score. The cause remains open. [H100 control measurements](docs/h100.md#interpreting-the-paired-results)
 
+### Tail latency
+
+At concurrency 64, p99 time to first token was **46.28 s on A100 and 20.11 s on H100** for the Qwen configurations above. For GPT-OSS it was **24.63 s and 1.31 s**, respectively. The separate reports give p95 and p99 at every measured concurrency. [A100 tail latency](docs/a100.md#tail-latency) · [H100 tail latency](docs/h100.md#tail-latency)
+
 ## Reproduce and extend the results
 
-Run the offline check from a clone with Python 3.9 or later. For A100 it compares the CSVs with the archived timed JSONs and checks scores, correctness and final-tree records. For H100 it checks the exported profile summaries and the arithmetic of the reported paired ratios. It also checks the numbers in the side-by-side and hardware report tables.
+Run the offline check from a clone with Python 3.9 or later. For A100 it compares the CSVs with the archived timed JSONs and checks scores, correctness and final-tree records. For H100 it checks both arms against the original timed JSONs, reproduces the paired scores, and verifies per-prompt correctness, native verifier rewards and sampled memory peaks. The checker also validates the side-by-side and hardware report tables.
 
 ```sh
 python3 docs/acceptance/verify_results.py
