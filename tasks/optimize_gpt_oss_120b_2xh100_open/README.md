@@ -31,3 +31,7 @@ The stock 80% GPU memory setting left insufficient KV-cache capacity. At 95%, sa
 Mini-SWE-agent 2.4.6 used the open GPT-OSS-120B checkpoint on two separate A100s. The attempt ran for 9,183 seconds of its 30,000-second allowance with medium reasoning and temperature 0.6. Its separate unchanged-engine profiling pass completed 26 measurements and 5,648 timed requests. Its next 32,812-token input exceeded the local 32,768-token context window. Pier skipped the in-trial verifier after the error. The same operator used a fresh sandbox and the A100-adapted verifier to reproduce the final tree. Its edit gate awarded 0.0 reward for `no_patch` before correctness or speed testing of a candidate. [Solver evidence](results/solver-result.json) · [Submission](solution/README.md)
 
 [Additional profiling CSV](results/solver-profiling/raw-measurements.csv) · [Original verifier output](results/native-verifier.txt) · [GPU rerun guide](../../RUN.md)
+
+## H100 qualification
+
+Job 543515 completed on 2 × H100 at TP=2. It passed correctness on 2,000/2,000 positions and completed 5,648 measured requests across both unchanged arms. The original verifier returned `no_patch`. [Run record](results/h100/optimize_gpt_oss_120b_2xh100_open_h100_baseline_20261125T133721Z_543515/summary.json) · [Pristine-arm timings](results/h100/optimize_gpt_oss_120b_2xh100_open_h100_baseline_20261125T133721Z_543515/pristine-profiles.csv) · [H100 measurement notes](../../docs/h100.md)

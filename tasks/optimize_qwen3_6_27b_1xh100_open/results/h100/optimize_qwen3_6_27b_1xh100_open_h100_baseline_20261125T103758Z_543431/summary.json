@@ -1,0 +1,67 @@
+{
+  "task": "optimize_qwen3_6_27b_1xh100_open",
+  "run_id": "optimize_qwen3_6_27b_1xh100_open_h100_baseline_20261125T103758Z_543431",
+  "configuration": "qualified_unchanged_baseline",
+  "slurm": {
+    "job_id": 543431,
+    "node": "m2-xe117",
+    "state": "COMPLETED",
+    "exit_code": "0:0",
+    "elapsed": "02:59:13"
+  },
+  "hardware": {
+    "gpu": "NVIDIA H100 80GB HBM3",
+    "gpu_count": 1,
+    "visible_memory_mib_per_gpu": 81559,
+    "driver": "615.71.09",
+    "cpus": 16,
+    "host_memory_gib": 256,
+    "shared_memory_gib": 16
+  },
+  "model": {
+    "id": "Qwen/Qwen3.6-27B",
+    "revision": "1cda14dd71a3f47115850eb790f416f165da1cb5",
+    "precision": "BF16",
+    "tensor_parallelism": 1
+  },
+  "runtime": {
+    "backend": "Apptainer 1.4.5",
+    "sif_sha256": "495a4c88dc4cbbd4bc83319973c6123bcd6b94f7a767cde3e85a83291b1cf0ad",
+    "benchmark_revision": "1a38072fbe284234c874356b86c9df666a5a79a3",
+    "engine_revision": "132765e3560659ff63ebd236203672e991b70e08",
+    "prepared_baseline_commit": "9e4adbe3b157bb110fb1256e6ee3251f0fc39157",
+    "measured_engine_tree": "a69e2f27fcaaeab14a5dd83d5477d5483156ce5e",
+    "torch": "2.11.0+cu128",
+    "vllm_distribution": "0.20.1+cu129",
+    "cuda_runtime": "12.8",
+    "gpu_memory_utilization": 0.85,
+    "cuda_package_overrides": {
+      "cuda-python": "12.9.11",
+      "cuda-bindings": "12.9.11",
+      "cuda-toolkit": "12.8.1"
+    }
+  },
+  "benchmark_seed": 1795604094,
+  "warmups_per_profile": 2,
+  "pristine_profiles": "pristine-profiles.csv",
+  "measured_runs": 18,
+  "completed_requests": 4104,
+  "completed_requests_per_arm": 2052,
+  "failed_requests": 0,
+  "prompts": 20,
+  "correct_positions": 1994,
+  "total_positions": 2000,
+  "correctness_passed": true,
+  "paired_unchanged_ratio": 0.9934418562735271,
+  "workload_ratios": {
+    "decode_heavy": 0.9824683214319172,
+    "prefill_heavy": 0.9964388913189627,
+    "high_load": 1.0015165634104912
+  },
+  "native_verifier": {
+    "classification_kind": "empty",
+    "reason": "no_patch"
+  },
+  "solver_attempts": 0,
+  "agent_speedup": null
+}

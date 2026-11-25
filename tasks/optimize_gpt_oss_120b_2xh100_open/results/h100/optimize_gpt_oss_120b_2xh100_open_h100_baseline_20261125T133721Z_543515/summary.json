@@ -1,0 +1,69 @@
+{
+  "task": "optimize_gpt_oss_120b_2xh100_open",
+  "run_id": "optimize_gpt_oss_120b_2xh100_open_h100_baseline_20261125T133721Z_543515",
+  "configuration": "qualified_unchanged_baseline",
+  "slurm": {
+    "job_id": 543515,
+    "node": "m2-xe117",
+    "state": "COMPLETED",
+    "exit_code": "0:0",
+    "elapsed": "01:29:16"
+  },
+  "hardware": {
+    "gpu": "NVIDIA H100 80GB HBM3",
+    "gpu_count": 2,
+    "visible_memory_mib_per_gpu": 81559,
+    "driver": "615.71.09",
+    "cpus": 32,
+    "host_memory_gib": 256,
+    "shared_memory_gib": 16
+  },
+  "model": {
+    "id": "openai/gpt-oss-120b",
+    "revision": "bc75b44b8a2a116a0e4c6659bcd1b7969885f423",
+    "precision": "MXFP4 experts",
+    "tensor_parallelism": 2
+  },
+  "runtime": {
+    "backend": "Apptainer 1.4.5",
+    "sif_sha256": "c3b12146d97c17fcafa12b3bbf084bd462514e48a81c90fce2e9ea891f14f9f3",
+    "benchmark_revision": "1a38072fbe284234c874356b86c9df666a5a79a3",
+    "engine_revision": "b1388b1fbf5aaef47937fabe98931211684666a6",
+    "prepared_baseline_commit": "a2d56253c0c482ba8965219fd10635c8e3f45b16",
+    "measured_engine_tree": "a2748086c60be2c6f6f150d02f3a7c0811a65dad",
+    "torch": "2.10.0+cu128",
+    "vllm_distribution": "0.19.1",
+    "cuda_runtime": "12.8",
+    "gpu_memory_utilization": 0.8,
+    "harmony_vocabulary_sha256": "446a9538cb6c348e3516120d7c08b09f57c36495e2acfffe59a5bf8b0cfb1a2d"
+  },
+  "benchmark_seed": 1795614421,
+  "warmups_per_profile": 2,
+  "pristine_profiles": "pristine-profiles.csv",
+  "measured_runs": 26,
+  "completed_requests": 5648,
+  "completed_requests_per_arm": 2824,
+  "failed_requests": 0,
+  "prompts": 20,
+  "correct_positions": 2000,
+  "total_positions": 2000,
+  "correctness_passed": true,
+  "paired_unchanged_ratio": 1.0306063235425682,
+  "workload_ratios": {
+    "decode_heavy": 1.0822749300381325,
+    "prefill_heavy": 1.0100814136226077,
+    "high_load": 1.0013466062984278
+  },
+  "native_verifier": {
+    "classification_kind": "empty",
+    "reason": "no_patch"
+  },
+  "solver_attempts": 0,
+  "agent_speedup": null,
+  "decode_boot_output_tokens_per_s": {
+    "candidate": [
+      216.15795544869533,
+      216.12700497193774
+    ]
+  }
+}

@@ -149,12 +149,79 @@ def verify_task(folder):
     return len(rows), total
 
 
+def verify_h100(outcome):
+    task = outcome["task"]
+    folder = ROOT / "tasks" / task / "results/h100" / outcome["run_id"]
+    summary = json.loads((folder / "summary.json").read_text())
+    path = folder / summary["pristine_profiles"]
+    require(path == ROOT / outcome["throughput"] and summary["task"] == task
+            and summary["run_id"] == folder.name, f"{task}: H100 evidence path mismatch")
+    with path.open(newline="") as stream:
+        rows = list(csv.DictReader(stream))
+    profiles = {("decode_heavy", 1), ("prefill_heavy", 1), ("high_load", 16), ("high_load", 32), ("high_load", 64)}
+    require(len(rows) == len(profiles) and {(r["workload"], int(r["concurrency"])) for r in rows} == profiles,
+            f"{task}: incomplete or duplicate H100 profile")
+    job = summary["slurm"]
+    model = summary["model"]
+    gpu_count = 2 if "gpt_oss" in task else 1
+    require(job["state"] == "COMPLETED" and job["exit_code"] == "0:0" and str(job["job_id"]) == outcome["slurm_job_id"]
+            and outcome["status"] == summary["configuration"] == "qualified_unchanged_baseline",
+            f"{task}: H100 qualification status mismatch")
+    require(model["revision"] == outcome["checkpoint_revision"] and
+            model["tensor_parallelism"] == summary["hardware"]["gpu_count"] == int(outcome["tensor_parallelism"]) == gpu_count,
+            f"{task}: H100 configuration mismatch")
+    measured = requests = 0
+    repeated_profiles = 2 if "gpt_oss" in task else 1
+    for row in rows:
+        workload = row["workload"]
+        label = f"{task}/{workload}/c{row['concurrency']}"
+        inputs, outputs, prompts = WORKLOADS[workload]
+        reps = int(row["measured_repetitions"])
+        require(row["arm"] == "pristine" and row["job_id"] == outcome["slurm_job_id"] and
+                row["sacct_node"] == job["node"] and row["sacct_exit"] == job["exit_code"] and
+                int(row["h100_count"]) == gpu_count, f"{label}: profile provenance mismatch")
+        expected_repetitions = 5 if workload == "prefill_heavy" else repeated_profiles
+        require(int(row["requests_per_repetition"]) == prompts and reps == expected_repetitions,
+                f"{label}: workload count mismatch")
+        rate = float(row["requests_per_s"])
+        require(math.isfinite(rate) and rate > 0 and math.isclose(float(row["total_tokens_per_s"]), rate * (inputs + outputs))
+                and math.isclose(float(row["output_tokens_per_s"]), rate * outputs), f"{label}: token rate mismatch")
+        latency_fields = ["median_ttft_ms"]
+        if outputs > 1:
+            latency_fields.append("median_tpot_ms")
+        else:
+            require(row["median_tpot_ms"] == "", f"{label}: unexpected single-token TPOT")
+        require(all(0 < float(row[k]) < math.inf for k in latency_fields), f"{label}: invalid latency")
+        measured += reps
+        requests += prompts * reps
+    require(summary["measured_runs"] == 2 * measured and summary["completed_requests_per_arm"] == requests and
+            summary["completed_requests"] == 2 * requests and summary["failed_requests"] == 0,
+            f"{task}: H100 request or measurement totals differ")
+    require(summary["correctness_passed"] and 0 < summary["correct_positions"] <= summary["total_positions"] and
+            f"{summary['correct_positions']}/{summary['total_positions']}" == outcome["correctness"],
+            f"{task}: H100 correctness totals differ")
+    ratios = summary["workload_ratios"]
+    require(set(ratios) == set(WORKLOADS) and math.isclose(geometric_mean(ratios.values()), summary["paired_unchanged_ratio"])
+            and math.isclose(float(outcome["paired_speedup"]), summary["paired_unchanged_ratio"], rel_tol=0, abs_tol=5e-8),
+            f"{task}: reported H100 A/A ratios differ")
+    require(summary["solver_attempts"] == int(outcome["solver_attempts"]) == 0 and summary["agent_speedup"] is None and
+            summary["native_verifier"] == {"classification_kind": "empty", "reason": "no_patch"},
+            f"{task}: inconsistent H100 baseline outcome")
+    print(f"H100 job {job['job_id']}: {len(rows)} pristine profiles, {2 * requests:,} reported requests across both arms")
+
+
 def main():
     summaries = sorted((ROOT / "tasks").glob("*/results/summary.json"))
     require(len(summaries) == 2, "Expected both campaign tasks")
     results = [verify_task(p.parents[1]) for p in summaries]
     require(Path(__file__).with_name("variability.md").read_text() == render(), "Stale variability table")
-    print(f"Verified {sum(n for n, _ in results)} qualification measurements and {sum(t for _, t in results):,} requests.")
+    print(f"Verified {sum(n for n, _ in results)} A100 qualification measurements and {sum(t for _, t in results):,} requests.")
+    with Path(__file__).with_name("outcomes.csv").open(newline="") as stream:
+        h100 = [row for row in csv.DictReader(stream) if row["configuration"] == "assigned_h100_baseline"]
+    require(len(h100) == len(summaries) and {r["task"] for r in h100} == {p.parents[1].name for p in summaries},
+            "Expected one assigned H100 baseline per task")
+    for outcome in h100:
+        verify_h100(outcome)
 
 
 if __name__ == "__main__":

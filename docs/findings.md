@@ -17,3 +17,7 @@ This experiment is planned. The original unsuccessful attempt remains the refere
 3. Record the solver model and revision, agent version, system prompt, config diff, context and output limits, temperature, reasoning effort, time/token budgets, retry policy and stop conditions. The original used mini-SWE-agent 2.4.6, the pinned local GPT-OSS-120B model, 32,768 context tokens, up to 3,072 output tokens, temperature 0.6, medium reasoning, 30,000 s for the agent and 18,000 s for verification. Treat any history-handling or budget change as part of the new experiment.
 4. Save the trajectory, token usage and stop reason. After each attempted edit, save the intermediate patch and its base tree, including edits later reverted. Freeze the final committed and working-tree diffs.
 5. Reconstruct the final tree in a fresh environment. Record the edit classification, correctness and paired workload timings for a qualifying candidate. Report local verifier reward separately from measured speedup and preserve negative or empty outcomes.
+
+## H100 baseline outcome
+
+Both tasks qualified on the assigned GPU counts. The Qwen single-H100 result establishes that the full BF16 checkpoint and all public workloads fit in the assigned configuration. The GPT run completed MXFP4 inference across two H100s. Its unchanged first arm averaged 216.14 output tokens/s in heavy decode, while the pristine arm averaged 199.61. The source tree was clean and the cause of this difference remains unresolved. [H100 measurements and run records](h100.md)

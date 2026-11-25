@@ -1,4 +1,15 @@
-# RSI inference benchmarks on 40 GiB A100s
+# RSI inference benchmarks on A100 and H100
+
+Both original H100 assignments qualified. Qwen3.6-27B ran on one H100 and GPT-OSS-120B ran on two. Every timed request completed across both unchanged-engine arms.
+
+| H100 baseline | Slurm job | Correct positions | Timed requests, both arms | A/A ratio |
+| --- | ---: | ---: | ---: | ---: |
+| Qwen3.6-27B, TP=1 | 543431 | 1,994 / 2,000 | 4,104 | 0.993442× |
+| GPT-OSS-120B, TP=2 | 543515 | 2,000 / 2,000 | 5,648 | 1.030606× |
+
+The H100 campaign covered baseline qualification. The native verifier returned `no_patch` for both tasks. GPT-OSS showed an 8.23% decode difference between unchanged arms across two boots per arm. [H100 throughput, latency and run records](docs/h100.md)
+
+## A100 port and optimization attempt
 
 We tested two of Apple’s H100 inference optimization tasks on 40 GiB A100s using the original model checkpoints. **GPT-OSS qualified on two A100s. Qwen exceeded the memory of one A100 in its assigned configuration and qualified on two A100s in a separate diagnostic.**
 
@@ -13,7 +24,7 @@ After qualification, a separate GPT profiling pass on the unchanged engine added
 
 ## Reproduce and extend the results
 
-Run the offline check from a clone with Python 3.9 or later. It compares the CSVs with the original timed JSONs, recomputes the benchmark scores and variability, and checks the correctness and final-tree records.
+Run the offline check from a clone with Python 3.9 or later. For A100 it compares the CSVs with the archived timed JSONs and checks scores, correctness and final-tree records. For H100 it checks the exported profile summaries, workload coverage and reported paired ratios against the outcome table.
 
 ```sh
 python3 docs/acceptance/verify_results.py
@@ -26,6 +37,6 @@ python3 docs/acceptance/verify_results.py
 | [Hardware](docs/hardware.md) and [task selection](docs/selection/README.md) | Allocation sizes, costs and rationale for the Qwen diagnostic |
 | [Findings](docs/findings.md) | What ran, measurement limitations and the proposed GPT retry |
 
-A separate H100 campaign is in progress on another cluster. Its results are pending. Future runs can be added under `tasks/<task>/results/h100/<run-id>/` with their own pins, raw timings and native verifier output. The A100 campaign has no external independent hardware reproduction.
+The A100 rerun guide applies to the A100 port. The H100 campaign used Slurm and Apptainer with the original H100 assignments. [H100 setup and measurements](docs/h100.md)
 
 Apple’s pinned benchmark defines the tasks. The companion study informed the organization of this repository. Each study reports its own experiments. [Upstream benchmark](https://github.com/apple-aiml-research/ml-rsi-inference-bench/tree/1a38072fbe284234c874356b86c9df666a5a79a3) · [Companion study](https://github.com/RefrainTC/RSI_Apple_Bench/tree/5c2a96207c65d81796636c2f31d354e3f04dd65c)
