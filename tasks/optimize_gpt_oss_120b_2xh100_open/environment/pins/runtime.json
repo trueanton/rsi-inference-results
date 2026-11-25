@@ -22,5 +22,11 @@
     "high_load_per_concurrency": 2
   },
   "benchmark_gpu_memory_utilization": 0.95,
-  "VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS": "1"
+  "VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS": "1",
+  "benchmark_seed": 1795559967,
+  "correctness_context_tokens": 4096,
+  "correctness_gpu_memory_utilization": 0.95,
+  "checkpoint_top_level_bytes": 65276859410,
+  "unpacked_image_bytes": 23065049963,
+  "oci_archive_sha256": "4d4e08bf4ead95a30c3c0af844afdb97048dee81c3b94a858c36619f3db7317c"
 }

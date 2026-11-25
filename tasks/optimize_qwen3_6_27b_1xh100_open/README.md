@@ -2,7 +2,7 @@
 
 **Assigned single-GPU task:** The 64 transformer layers alone contain 48,706,393,088 BF16 bytes. A 40 GiB device has 42,949,672,960 nominal bytes. That leaves a 5,756,720,128-byte deficit before embeddings, KV cache and workspace.
 
-**Two-GPU diagnostic:** The original BF16 checkpoint completed all three workloads at tensor parallelism 2. Both arms together completed **4,104 timed requests with zero failures**. The assigned single-GPU task had zero solver attempts. [Summary](results/summary.json) · [Original Apple task](https://github.com/apple-aiml-research/ml-rsi-inference-bench/tree/1a38072fbe284234c874356b86c9df666a5a79a3/tasks/optimize_qwen3_6_27b_1xh100_open)
+**Two-GPU diagnostic:** The original BF16 checkpoint completed all three workloads at tensor parallelism 2. Both arms together completed **4,104 timed requests with zero failures**. No solver ran on either configuration. Agent speedup is N/A. [Summary](results/summary.json) · [Original Apple task](https://github.com/apple-aiml-research/ml-rsi-inference-bench/tree/1a38072fbe284234c874356b86c9df666a5a79a3/tasks/optimize_qwen3_6_27b_1xh100_open)
 
 ## Workload and scores
 
@@ -22,6 +22,10 @@ The harness measured one decode boot, five prefill repetitions and one high-load
 
 The combined self-ratio was **0.999820×**. Each arm completed 2,052 timed requests. The teacher-forced correctness check passed on 1,990 of 2,000 positions over 20 prompts with absolute and relative tolerances of 0.05. [Raw measurements](results/raw-measurements.csv)
 
+The single decode observation was 23.77341 ms/token in the candidate arm and 23.76841 in pristine. There is one high-load repetition per concurrency and arm, so those profiles also lack a between-repetition SD. Across five prefill repetitions the means of the median TTFTs were 1,203.78 ms (candidate) and 1,203.74 ms (pristine). The prefill score above uses trimmed reciprocal latencies. [Variation by profile and arm](../../docs/acceptance/variability.md) · [Harness output](results/bench.json)
+
 ## Build and audit
 
-The clean image matched all 200 upstream Qwen package pins. Its stock lock produced two CUDA package metadata conflicts with Torch 2.11.0+cu128. An earlier image had reused a GPT dependency layer and was discarded. The first operator postcheck on the clean run expected a top-level mode field. The Qwen helper reports the live pristine baseline per workload. An audit using those records verified all 18 measurement files after the public benchmark had finished. [Environment pins](environment/pins/runtime.json) · [Acceptance record](../../docs/acceptance/README.md)
+The clean image matched all 200 upstream Qwen package pins. Its pip check reported two conflicts with Torch 2.11.0+cu128, for CUDA bindings and toolkit versions. The earlier image and its derivative rebuilds reused GPT dependencies. Their measurements were excluded. [Environment pins](environment/pins/runtime.json) · [Dependency check](results/pip-check.txt)
+
+Both correctness children exited successfully and the benchmark wrote its paired results. Slurm recorded exit 1 after the operator postcheck raised `KeyError: 'mode'`. The Qwen helper records its live pristine baseline per workload. The same operator verified all 18 saved measurements against those records. [Correctness output](results/correctness.json) · [Recovery record](results/postcheck-recovery.json) · [GPU rerun guide](../../RUN.md)

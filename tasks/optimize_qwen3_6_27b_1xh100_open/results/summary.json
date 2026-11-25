@@ -16,6 +16,7 @@
   "bf16_transformer_layer_bytes": 48706393088,
   "nominal_device_bytes": 42949672960,
   "slurm_exit": "1:0",
-  "postcheck": "public benchmark completed; independent per-workload audit passed",
-  "native_h100_score": null
+  "postcheck": "public benchmark completed; same-operator per-workload recovery audit passed",
+  "native_h100_score": null,
+  "agent_speedup": null
 }

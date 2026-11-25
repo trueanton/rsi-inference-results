@@ -1,0 +1,806 @@
+{
+  "lock_sha256": "5edb364d46da821b1ebc62f060ecdd04b4eeaacb91bfd4575b10cef9dbd023fd",
+  "packages": {
+    "Jinja2": {
+      "expected": "===3.1.6",
+      "installed": "3.1.6"
+    },
+    "MarkupSafe": {
+      "expected": "===3.0.3",
+      "installed": "3.0.3"
+    },
+    "pyarrow": {
+      "expected": "===25.0.1",
+      "installed": "25.0.1"
+    },
+    "PyJWT": {
+      "expected": "===2.13.0",
+      "installed": "2.13.0"
+    },
+    "PyYAML": {
+      "expected": "===6.0.3",
+      "installed": "6.0.3"
+    },
+    "Pygments": {
+      "expected": "===2.20.0",
+      "installed": "2.20.0"
+    },
+    "aiohappyeyeballs": {
+      "expected": "===2.6.2",
+      "installed": "2.6.2"
+    },
+    "aiohttp": {
+      "expected": "===3.13.5",
+      "installed": "3.13.5"
+    },
+    "aiosignal": {
+      "expected": "===1.4.0",
+      "installed": "1.4.0"
+    },
+    "annotated-doc": {
+      "expected": "===0.0.4",
+      "installed": "0.0.4"
+    },
+    "annotated-types": {
+      "expected": "===0.7.0",
+      "installed": "0.7.0"
+    },
+    "anthropic": {
+      "expected": "===0.105.2",
+      "installed": "0.105.2"
+    },
+    "anyio": {
+      "expected": "===4.13.0",
+      "installed": "4.13.0"
+    },
+    "apache-tvm-ffi": {
+      "expected": "===0.1.9",
+      "installed": "0.1.9"
+    },
+    "astor": {
+      "expected": "===0.8.1",
+      "installed": "0.8.1"
+    },
+    "attrs": {
+      "expected": "===26.1.0",
+      "installed": "26.1.0"
+    },
+    "blake3": {
+      "expected": "===1.0.8",
+      "installed": "1.0.8"
+    },
+    "cachetools": {
+      "expected": "===7.1.4",
+      "installed": "7.1.4"
+    },
+    "cbor2": {
+      "expected": "===6.1.1",
+      "installed": "6.1.1"
+    },
+    "certifi": {
+      "expected": "===2026.5.20",
+      "installed": "2026.5.20"
+    },
+    "cffi": {
+      "expected": "===2.0.0",
+      "installed": "2.0.0"
+    },
+    "charset-normalizer": {
+      "expected": "===3.4.7",
+      "installed": "3.4.7"
+    },
+    "click": {
+      "expected": "===8.4.1",
+      "installed": "8.4.1"
+    },
+    "cloudpickle": {
+      "expected": "===3.1.2",
+      "installed": "3.1.2"
+    },
+    "compressed-tensors": {
+      "expected": "===0.15.0.1",
+      "installed": "0.15.0.1"
+    },
+    "cryptography": {
+      "expected": "===48.0.0",
+      "installed": "48.0.0"
+    },
+    "cuda-bindings": {
+      "expected": "===13.3.0",
+      "installed": "13.3.0"
+    },
+    "cuda-core": {
+      "expected": "===1.0.1",
+      "installed": "1.0.1"
+    },
+    "cuda-pathfinder": {
+      "expected": "===1.5.5",
+      "installed": "1.5.5"
+    },
+    "cuda-python": {
+      "expected": "===13.3.0",
+      "installed": "13.3.0"
+    },
+    "cuda-tile": {
+      "expected": "===1.4.0",
+      "installed": "1.4.0"
+    },
+    "cuda-toolkit": {
+      "expected": "===13.0.2",
+      "installed": "13.0.2"
+    },
+    "depyf": {
+      "expected": "===0.20.0",
+      "installed": "0.20.0"
+    },
+    "detect-installer": {
+      "expected": "===0.1.0",
+      "installed": "0.1.0"
+    },
+    "dill": {
+      "expected": "===0.4.1",
+      "installed": "0.4.1"
+    },
+    "diskcache": {
+      "expected": "===5.6.3",
+      "installed": "5.6.3"
+    },
+    "distro": {
+      "expected": "===1.9.0",
+      "installed": "1.9.0"
+    },
+    "dnspython": {
+      "expected": "===2.8.0",
+      "installed": "2.8.0"
+    },
+    "docstring_parser": {
+      "expected": "===0.18.0",
+      "installed": "0.18.0"
+    },
+    "einops": {
+      "expected": "===0.8.2",
+      "installed": "0.8.2"
+    },
+    "email-validator": {
+      "expected": "===2.3.0",
+      "installed": "2.3.0"
+    },
+    "fastapi-cli": {
+      "expected": "===0.0.24",
+      "installed": "0.0.24"
+    },
+    "fastapi-cloud-cli": {
+      "expected": "===0.18.0",
+      "installed": "0.18.0"
+    },
+    "fastapi": {
+      "expected": "===0.136.3",
+      "installed": "0.136.3"
+    },
+    "fastar": {
+      "expected": "===0.11.0",
+      "installed": "0.11.0"
+    },
+    "fastsafetensors": {
+      "expected": "===0.3.2",
+      "installed": "0.3.2"
+    },
+    "filelock": {
+      "expected": "===3.29.0",
+      "installed": "3.29.0"
+    },
+    "flashinfer-cubin": {
+      "expected": "===0.6.8.post1",
+      "installed": "0.6.8.post1"
+    },
+    "flashinfer-python": {
+      "expected": "===0.6.8.post1",
+      "installed": "0.6.8.post1"
+    },
+    "frozenlist": {
+      "expected": "===1.8.0",
+      "installed": "1.8.0"
+    },
+    "fsspec": {
+      "expected": "===2026.4.0",
+      "installed": "2026.4.0"
+    },
+    "gguf": {
+      "expected": "===0.19.0",
+      "installed": "0.19.0"
+    },
+    "googleapis-common-protos": {
+      "expected": "===1.75.0",
+      "installed": "1.75.0"
+    },
+    "grpcio": {
+      "expected": "===1.80.0",
+      "installed": "1.80.0"
+    },
+    "h11": {
+      "expected": "===0.16.0",
+      "installed": "0.16.0"
+    },
+    "hf-xet": {
+      "expected": "===1.5.0",
+      "installed": "1.5.0"
+    },
+    "httpcore": {
+      "expected": "===1.0.9",
+      "installed": "1.0.9"
+    },
+    "httptools": {
+      "expected": "===0.8.0",
+      "installed": "0.8.0"
+    },
+    "httpx-sse": {
+      "expected": "===0.4.3",
+      "installed": "0.4.3"
+    },
+    "httpx": {
+      "expected": "===0.28.1",
+      "installed": "0.28.1"
+    },
+    "huggingface_hub": {
+      "expected": "===1.17.0",
+      "installed": "1.17.0"
+    },
+    "idna": {
+      "expected": "===3.17",
+      "installed": "3.17"
+    },
+    "ijson": {
+      "expected": "===3.5.0",
+      "installed": "3.5.0"
+    },
+    "interegular": {
+      "expected": "===0.3.3",
+      "installed": "0.3.3"
+    },
+    "jiter": {
+      "expected": "===0.15.0",
+      "installed": "0.15.0"
+    },
+    "jmespath": {
+      "expected": "===1.1.0",
+      "installed": "1.1.0"
+    },
+    "jsonschema-specifications": {
+      "expected": "===2025.9.1",
+      "installed": "2025.9.1"
+    },
+    "jsonschema": {
+      "expected": "===4.26.0",
+      "installed": "4.26.0"
+    },
+    "lark": {
+      "expected": "===1.2.2",
+      "installed": "1.2.2"
+    },
+    "llguidance": {
+      "expected": "===1.3.0",
+      "installed": "1.3.0"
+    },
+    "llvmlite": {
+      "expected": "===0.47.0",
+      "installed": "0.47.0"
+    },
+    "lm-format-enforcer": {
+      "expected": "===0.11.3",
+      "installed": "0.11.3"
+    },
+    "loguru": {
+      "expected": "===0.7.3",
+      "installed": "0.7.3"
+    },
+    "markdown-it-py": {
+      "expected": "===4.2.0",
+      "installed": "4.2.0"
+    },
+    "mcp": {
+      "expected": "===1.27.2",
+      "installed": "1.27.2"
+    },
+    "mdurl": {
+      "expected": "===0.1.2",
+      "installed": "0.1.2"
+    },
+    "mistral_common": {
+      "expected": "===1.11.2",
+      "installed": "1.11.2"
+    },
+    "ml_dtypes": {
+      "expected": "===0.5.4",
+      "installed": "0.5.4"
+    },
+    "model-hosting-container-standards": {
+      "expected": "===0.1.15",
+      "installed": "0.1.15"
+    },
+    "mpmath": {
+      "expected": "===1.3.0",
+      "installed": "1.3.0"
+    },
+    "msgspec": {
+      "expected": "===0.21.1",
+      "installed": "0.21.1"
+    },
+    "multidict": {
+      "expected": "===6.7.1",
+      "installed": "6.7.1"
+    },
+    "networkx": {
+      "expected": "===3.6.1",
+      "installed": "3.6.1"
+    },
+    "ninja": {
+      "expected": "===1.13.0",
+      "installed": "1.13.0"
+    },
+    "numba": {
+      "expected": "===0.65.0",
+      "installed": "0.65.0"
+    },
+    "numpy": {
+      "expected": "===2.3.5",
+      "installed": "2.3.5"
+    },
+    "nvidia-cublas-cu12": {
+      "expected": "===12.8.4.1",
+      "installed": "12.8.4.1"
+    },
+    "nvidia-cublas": {
+      "expected": "===13.1.0.3",
+      "installed": "13.1.0.3"
+    },
+    "nvidia-cuda-cupti-cu12": {
+      "expected": "===12.8.90",
+      "installed": "12.8.90"
+    },
+    "nvidia-cuda-cupti": {
+      "expected": "===13.0.85",
+      "installed": "13.0.85"
+    },
+    "nvidia-cuda-nvrtc-cu12": {
+      "expected": "===12.8.93",
+      "installed": "12.8.93"
+    },
+    "nvidia-cuda-nvrtc": {
+      "expected": "===13.0.88",
+      "installed": "13.0.88"
+    },
+    "nvidia-cuda-runtime-cu12": {
+      "expected": "===12.8.90",
+      "installed": "12.8.90"
+    },
+    "nvidia-cuda-runtime": {
+      "expected": "===13.0.96",
+      "installed": "13.0.96"
+    },
+    "nvidia-cudnn-cu12": {
+      "expected": "===9.19.0.56",
+      "installed": "9.19.0.56"
+    },
+    "nvidia-cudnn-cu13": {
+      "expected": "===9.19.0.56",
+      "installed": "9.19.0.56"
+    },
+    "nvidia-cudnn-frontend": {
+      "expected": "===1.18.0",
+      "installed": "1.18.0"
+    },
+    "nvidia-cufft-cu12": {
+      "expected": "===11.3.3.83",
+      "installed": "11.3.3.83"
+    },
+    "nvidia-cufft": {
+      "expected": "===12.0.0.61",
+      "installed": "12.0.0.61"
+    },
+    "nvidia-cufile-cu12": {
+      "expected": "===1.13.1.3",
+      "installed": "1.13.1.3"
+    },
+    "nvidia-cufile": {
+      "expected": "===1.15.1.6",
+      "installed": "1.15.1.6"
+    },
+    "nvidia-curand-cu12": {
+      "expected": "===10.3.9.90",
+      "installed": "10.3.9.90"
+    },
+    "nvidia-curand": {
+      "expected": "===10.4.0.35",
+      "installed": "10.4.0.35"
+    },
+    "nvidia-cusolver-cu12": {
+      "expected": "===11.7.3.90",
+      "installed": "11.7.3.90"
+    },
+    "nvidia-cusolver": {
+      "expected": "===12.0.4.66",
+      "installed": "12.0.4.66"
+    },
+    "nvidia-cusparse-cu12": {
+      "expected": "===12.5.8.93",
+      "installed": "12.5.8.93"
+    },
+    "nvidia-cusparse": {
+      "expected": "===12.6.3.3",
+      "installed": "12.6.3.3"
+    },
+    "nvidia-cusparselt-cu12": {
+      "expected": "===0.7.1",
+      "installed": "0.7.1"
+    },
+    "nvidia-cusparselt-cu13": {
+      "expected": "===0.8.0",
+      "installed": "0.8.0"
+    },
+    "nvidia-cutlass-dsl-libs-base": {
+      "expected": "===4.5.2",
+      "installed": "4.5.2"
+    },
+    "nvidia-cutlass-dsl": {
+      "expected": "===4.5.2",
+      "installed": "4.5.2"
+    },
+    "nvidia-ml-py": {
+      "expected": "===13.595.45",
+      "installed": "13.595.45"
+    },
+    "nvidia-nccl-cu12": {
+      "expected": "===2.28.9",
+      "installed": "2.28.9"
+    },
+    "nvidia-nccl-cu13": {
+      "expected": "===2.28.9",
+      "installed": "2.28.9"
+    },
+    "nvidia-nvjitlink-cu12": {
+      "expected": "===12.8.93",
+      "installed": "12.8.93"
+    },
+    "nvidia-nvjitlink": {
+      "expected": "===13.0.88",
+      "installed": "13.0.88"
+    },
+    "nvidia-nvshmem-cu12": {
+      "expected": "===3.4.5",
+      "installed": "3.4.5"
+    },
+    "nvidia-nvshmem-cu13": {
+      "expected": "===3.4.5",
+      "installed": "3.4.5"
+    },
+    "nvidia-nvtx-cu12": {
+      "expected": "===12.8.90",
+      "installed": "12.8.90"
+    },
+    "nvidia-nvtx": {
+      "expected": "===13.0.85",
+      "installed": "13.0.85"
+    },
+    "openai-harmony": {
+      "expected": "===0.0.8",
+      "installed": "0.0.8"
+    },
+    "openai": {
+      "expected": "===2.38.0",
+      "installed": "2.38.0"
+    },
+    "opencv-python-headless": {
+      "expected": "===4.13.0.92",
+      "installed": "4.13.0.92"
+    },
+    "opentelemetry-api": {
+      "expected": "===1.42.1",
+      "installed": "1.42.1"
+    },
+    "opentelemetry-exporter-otlp-proto-common": {
+      "expected": "===1.42.1",
+      "installed": "1.42.1"
+    },
+    "opentelemetry-exporter-otlp-proto-grpc": {
+      "expected": "===1.42.1",
+      "installed": "1.42.1"
+    },
+    "opentelemetry-exporter-otlp-proto-http": {
+      "expected": "===1.42.1",
+      "installed": "1.42.1"
+    },
+    "opentelemetry-exporter-otlp": {
+      "expected": "===1.42.1",
+      "installed": "1.42.1"
+    },
+    "opentelemetry-proto": {
+      "expected": "===1.42.1",
+      "installed": "1.42.1"
+    },
+    "opentelemetry-sdk": {
+      "expected": "===1.42.1",
+      "installed": "1.42.1"
+    },
+    "opentelemetry-semantic-conventions-ai": {
+      "expected": "===0.5.1",
+      "installed": "0.5.1"
+    },
+    "opentelemetry-semantic-conventions": {
+      "expected": "===0.63b1",
+      "installed": "0.63b1"
+    },
+    "outlines_core": {
+      "expected": "===0.2.14",
+      "installed": "0.2.14"
+    },
+    "packaging": {
+      "expected": "===26.2",
+      "installed": "26.2"
+    },
+    "pandas": {
+      "expected": "===3.0.3",
+      "installed": "3.0.3"
+    },
+    "partial-json-parser": {
+      "expected": "===0.2.1.1.post7",
+      "installed": "0.2.1.1.post7"
+    },
+    "pillow": {
+      "expected": "===12.2.0",
+      "installed": "12.2.0"
+    },
+    "prometheus-fastapi-instrumentator": {
+      "expected": "===8.0.0",
+      "installed": "8.0.0"
+    },
+    "prometheus_client": {
+      "expected": "===0.25.0",
+      "installed": "0.25.0"
+    },
+    "propcache": {
+      "expected": "===0.5.2",
+      "installed": "0.5.2"
+    },
+    "protobuf": {
+      "expected": "===6.33.6",
+      "installed": "6.33.6"
+    },
+    "psutil": {
+      "expected": "===7.2.2",
+      "installed": "7.2.2"
+    },
+    "py-cpuinfo": {
+      "expected": "===9.0.0",
+      "installed": "9.0.0"
+    },
+    "pybase64": {
+      "expected": "===1.4.3",
+      "installed": "1.4.3"
+    },
+    "pycountry": {
+      "expected": "===26.2.16",
+      "installed": "26.2.16"
+    },
+    "pycparser": {
+      "expected": "===3.0",
+      "installed": "3.0"
+    },
+    "pydantic-extra-types": {
+      "expected": "===2.11.1",
+      "installed": "2.11.1"
+    },
+    "pydantic-settings": {
+      "expected": "===2.14.1",
+      "installed": "2.14.1"
+    },
+    "pydantic": {
+      "expected": "===2.13.4",
+      "installed": "2.13.4"
+    },
+    "pydantic_core": {
+      "expected": "===2.46.4",
+      "installed": "2.46.4"
+    },
+    "python-dateutil": {
+      "expected": "===2.9.0.post0",
+      "installed": "2.9.0.post0"
+    },
+    "python-dotenv": {
+      "expected": "===1.2.2",
+      "installed": "1.2.2"
+    },
+    "python-json-logger": {
+      "expected": "===4.1.0",
+      "installed": "4.1.0"
+    },
+    "python-multipart": {
+      "expected": "===0.0.29",
+      "installed": "0.0.29"
+    },
+    "pyzmq": {
+      "expected": "===27.1.0",
+      "installed": "27.1.0"
+    },
+    "quack-kernels": {
+      "expected": "===0.5.0",
+      "installed": "0.5.0"
+    },
+    "referencing": {
+      "expected": "===0.37.0",
+      "installed": "0.37.0"
+    },
+    "regex": {
+      "expected": "===2026.5.9",
+      "installed": "2026.5.9"
+    },
+    "requests": {
+      "expected": "===2.34.2",
+      "installed": "2.34.2"
+    },
+    "rich-toolkit": {
+      "expected": "===0.19.10",
+      "installed": "0.19.10"
+    },
+    "rich": {
+      "expected": "===15.0.0",
+      "installed": "15.0.0"
+    },
+    "rignore": {
+      "expected": "===0.7.6",
+      "installed": "0.7.6"
+    },
+    "rpds-py": {
+      "expected": "===2026.5.1",
+      "installed": "2026.5.1"
+    },
+    "safetensors": {
+      "expected": "===0.7.0",
+      "installed": "0.7.0"
+    },
+    "sentencepiece": {
+      "expected": "===0.2.1",
+      "installed": "0.2.1"
+    },
+    "sentry-sdk": {
+      "expected": "===2.61.0",
+      "installed": "2.61.0"
+    },
+    "setproctitle": {
+      "expected": "===1.3.7",
+      "installed": "1.3.7"
+    },
+    "setuptools": {
+      "expected": "===80.10.2",
+      "installed": "80.10.2"
+    },
+    "shellingham": {
+      "expected": "===1.5.4",
+      "installed": "1.5.4"
+    },
+    "six": {
+      "expected": "===1.17.0",
+      "installed": "1.17.0"
+    },
+    "sniffio": {
+      "expected": "===1.3.1",
+      "installed": "1.3.1"
+    },
+    "sse-starlette": {
+      "expected": "===3.4.4",
+      "installed": "3.4.4"
+    },
+    "starlette": {
+      "expected": "===1.2.0",
+      "installed": "1.2.0"
+    },
+    "supervisor": {
+      "expected": "===4.3.0",
+      "installed": "4.3.0"
+    },
+    "sympy": {
+      "expected": "===1.14.0",
+      "installed": "1.14.0"
+    },
+    "tabulate": {
+      "expected": "===0.10.0",
+      "installed": "0.10.0"
+    },
+    "tiktoken": {
+      "expected": "===0.13.0",
+      "installed": "0.13.0"
+    },
+    "tilelang": {
+      "expected": "===0.1.9",
+      "installed": "0.1.9"
+    },
+    "tokenizers": {
+      "expected": "===0.22.2",
+      "installed": "0.22.2"
+    },
+    "torch": {
+      "expected": "==2.11.0+cu128",
+      "installed": "2.11.0+cu128"
+    },
+    "torch_c_dlpack_ext": {
+      "expected": "===0.1.5",
+      "installed": "0.1.5"
+    },
+    "torchaudio": {
+      "expected": "===2.11.0",
+      "installed": "2.11.0"
+    },
+    "torchvision": {
+      "expected": "==0.26.0+cu128",
+      "installed": "0.26.0+cu128"
+    },
+    "tqdm": {
+      "expected": "===4.67.3",
+      "installed": "4.67.3"
+    },
+    "transformers": {
+      "expected": "===5.9.0",
+      "installed": "5.9.0"
+    },
+    "triton": {
+      "expected": "===3.6.0",
+      "installed": "3.6.0"
+    },
+    "typer": {
+      "expected": "===0.25.1",
+      "installed": "0.25.1"
+    },
+    "typing-inspection": {
+      "expected": "===0.4.2",
+      "installed": "0.4.2"
+    },
+    "typing_extensions": {
+      "expected": "===4.15.0",
+      "installed": "4.15.0"
+    },
+    "urllib3": {
+      "expected": "===2.7.0",
+      "installed": "2.7.0"
+    },
+    "uvicorn": {
+      "expected": "===0.48.0",
+      "installed": "0.48.0"
+    },
+    "uvloop": {
+      "expected": "===0.22.1",
+      "installed": "0.22.1"
+    },
+    "vllm": {
+      "expected": "==0.20.1+cu129",
+      "installed": "0.20.1+cu129"
+    },
+    "watchfiles": {
+      "expected": "===1.2.0",
+      "installed": "1.2.0"
+    },
+    "websockets": {
+      "expected": "===16.0",
+      "installed": "16.0"
+    },
+    "wheel": {
+      "expected": "===0.47.0",
+      "installed": "0.47.0"
+    },
+    "xgrammar": {
+      "expected": "===0.2.1",
+      "installed": "0.2.1"
+    },
+    "yarl": {
+      "expected": "===1.24.2",
+      "installed": "1.24.2"
+    },
+    "z3-solver": {
+      "expected": "===4.15.4.0",
+      "installed": "4.15.4.0"
+    },
+    "pip": {
+      "expected": "===26.1.1",
+      "installed": "26.1.1"
+    }
+  },
+  "errors": []
+}

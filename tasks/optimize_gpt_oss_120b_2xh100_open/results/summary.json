@@ -14,5 +14,6 @@
   "solver_attempts": 1,
   "agent_outcome": "no_patch",
   "local_optimization_reward": 0.0,
-  "native_h100_score": null
+  "native_h100_score": null,
+  "agent_speedup": null
 }

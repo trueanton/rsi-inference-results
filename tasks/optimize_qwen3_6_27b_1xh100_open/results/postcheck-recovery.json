@@ -1,0 +1,8 @@
+{
+  "job": "434292",
+  "slurm_terminal": "FAILED 1:0",
+  "source": "operator postcheck after completed public benchmark",
+  "exception": "KeyError: 'mode'",
+  "resolution": "Verified live_pristine source and matched raw runs for all workloads",
+  "raw_audit": "public-audit.json"
+}

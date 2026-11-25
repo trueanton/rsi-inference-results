@@ -1,0 +1,159 @@
+{
+  "num_runs": {
+    "decode_heavy": 1,
+    "prefill_heavy": 5,
+    "high_load": 1
+  },
+  "boots": {
+    "decode_heavy": 1,
+    "prefill_heavy": 1,
+    "high_load": 1
+  },
+  "num_warmup": 2,
+  "per_workload": {
+    "decode_heavy": {
+      "workload": {
+        "name": "decode_heavy",
+        "input_len": 1024,
+        "output_len": 8192,
+        "num_prompts": 4,
+        "max_concurrency": 1
+      },
+      "candidate_stats": {
+        "n": 1,
+        "mean": 42.0637954061127,
+        "trimmed_mean": 42.0637954061127,
+        "stddev": 0.0,
+        "ci95_halfwidth": 0.0,
+        "min": 42.0637954061127,
+        "max": 42.0637954061127
+      },
+      "candidate_runs": [
+        42.0637954061127
+      ],
+      "pristine_stats": {
+        "n": 1,
+        "mean": 42.0726566475742,
+        "trimmed_mean": 42.0726566475742,
+        "stddev": 0.0,
+        "ci95_halfwidth": 0.0,
+        "min": 42.0726566475742,
+        "max": 42.0726566475742
+      },
+      "pristine_runs": [
+        42.0726566475742
+      ],
+      "speedup": 0.9997893824120563,
+      "ci95_overlap": false,
+      "baseline_source": "live_pristine"
+    },
+    "prefill_heavy": {
+      "workload": {
+        "name": "prefill_heavy",
+        "input_len": 8192,
+        "output_len": 1,
+        "num_prompts": 256,
+        "max_concurrency": 1
+      },
+      "candidate_stats": {
+        "n": 5,
+        "mean": 0.8307145030127897,
+        "trimmed_mean": 0.8307095546893039,
+        "stddev": 0.000127632661083796,
+        "ci95_halfwidth": 0.00011187496008236344,
+        "min": 0.8305710427014004,
+        "max": 0.8308728082946368
+      },
+      "candidate_runs": [
+        0.8308728082946368,
+        0.8305965618012131,
+        0.8307539182309323,
+        0.8305710427014004,
+        0.8307781840357661
+      ],
+      "pristine_stats": {
+        "n": 5,
+        "mean": 0.8307433042666355,
+        "trimmed_mean": 0.8308418283665062,
+        "stddev": 0.0006832641761773815,
+        "ci95_halfwidth": 0.0005989074566530228,
+        "min": 0.8298014239913157,
+        "max": 0.8313896122423426
+      },
+      "pristine_runs": [
+        0.8313014920460275,
+        0.8309410027904532,
+        0.8313896122423426,
+        0.8298014239913157,
+        0.830282990263038
+      ],
+      "speedup": 0.9998407955970844,
+      "ci95_overlap": true,
+      "baseline_source": "live_pristine"
+    },
+    "high_load": {
+      "workload": {
+        "name": "high_load",
+        "input_len": 1024,
+        "output_len": 1024,
+        "num_prompts": 256,
+        "_comment": "Closed-loop concurrency sweep: 3 profiles c16/c32/c64, all pattern=closed_loop (--request-rate inf; steady saturation holding exactly c in flight \u2014 NOT bursty arrivals), no rate_per_s. high_load score = geomean of request_throughput at the 3 concurrency levels. Measures closed-loop THROUGHPUT CAPACITY; does NOT measure arrival-pattern robustness, tail-latency, or SLO. Most models are pre-knee at c64 (mid-high-concurrency throughput, not peak \u2014 valid as a same-c ratio-to-baseline).",
+        "profiles": [
+          {
+            "name": "c16",
+            "pattern": "closed_loop",
+            "concurrency": 16
+          },
+          {
+            "name": "c32",
+            "pattern": "closed_loop",
+            "concurrency": 32
+          },
+          {
+            "name": "c64",
+            "pattern": "closed_loop",
+            "concurrency": 64
+          }
+        ]
+      },
+      "candidate_stats": {
+        "n": 1,
+        "mean": 0.7951058169879737,
+        "trimmed_mean": 0.7951058169879737,
+        "stddev": 0.0,
+        "ci95_halfwidth": 0.0,
+        "min": 0.7951058169879737,
+        "max": 0.7951058169879737
+      },
+      "candidate_runs": [
+        0.7951058169879737
+      ],
+      "pristine_stats": {
+        "n": 1,
+        "mean": 0.7952415840320188,
+        "trimmed_mean": 0.7952415840320188,
+        "stddev": 0.0,
+        "ci95_halfwidth": 0.0,
+        "min": 0.7952415840320188,
+        "max": 0.7952415840320188
+      },
+      "pristine_runs": [
+        0.7952415840320188
+      ],
+      "speedup": 0.9998292757235395,
+      "ci95_overlap": false,
+      "baseline_source": "live_pristine"
+    }
+  },
+  "candidate_provenance": {
+    "head_sha": "6935b241a1ca8390869d2162e81125aa22fa4b9d",
+    "tree_sha": "a69e2f27fcaaeab14a5dd83d5477d5483156ce5e",
+    "worktree_clean": true
+  },
+  "speedup_geomean": 0.9998198176682088,
+  "speedup_per_workload": {
+    "decode_heavy": 0.9997893824120563,
+    "prefill_heavy": 0.9998407955970844,
+    "high_load": 0.9998292757235395
+  }
+}

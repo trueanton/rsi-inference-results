@@ -1,0 +1,20 @@
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -4,7 +4,7 @@
+ #
+ ARG ENGINE=engine
+ 
+-FROM nvidia/cuda:12.8.1-devel-ubuntu24.04 AS engine
++FROM docker.io/nvidia/cuda@sha256:520292dbb4f755fd360766059e62956e9379485d9e073bbd2f6e3c20c270ed66 AS engine
+ 
+ ARG PIP_INDEX_URL=https://pypi.org/simple
+ 
+@@ -384,7 +384,7 @@
+ ENV VIRTUAL_ENV=/opt/venv \
+     INFB_VLLM_PYTHON=/opt/venv/bin/python3 \
+     CUDA_HOME=/usr/local/cuda-12.8 \
+-    TORCH_CUDA_ARCH_LIST=9.0+PTX \
++    TORCH_CUDA_ARCH_LIST=8.0 \
+     PATH=/opt/venv/bin:/usr/local/cuda-12.8/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+     LD_LIBRARY_PATH=/usr/local/cuda-12.8/lib64:/usr/local/nvidia/lib64
+ 

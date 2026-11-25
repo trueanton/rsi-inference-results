@@ -1,0 +1,3 @@
+[test.sh] Real-engine mode.
+[verifier] prompt seed for this eval (cand+pris shared): 1795556917 (set INFB_BENCH_SEED=<int> to pin/reproduce)
+[real] INFRA-VOID preflight=gpu_arch_mismatch -> RE-RUN (not scored 0): {'reason': 'gpu_arch_mismatch', 'note': 'infra precondition failed -> RE-RUN on correct hardware/mounts, do not score 0 against the model', 'expected_gpu_types': ['H100'], 'detected': ['NVIDIA A100-SXM4-40GB', 'NVIDIA A100-SXM4-40GB'], 'detected_arches': ['A100']}

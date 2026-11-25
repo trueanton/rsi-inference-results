@@ -1,0 +1,20 @@
+{
+  "qwen": {
+    "repository": "Qwen/Qwen3.6-27B",
+    "revision": "1cda14dd71a3f47115850eb790f416f165da1cb5",
+    "login_scratch": "@LOCAL_ROOT@/models/Qwen3.6-27B/1cda14dd71a3f47115850eb790f416f165da1cb5",
+    "shared_host_path": "@SHARED_ROOT@/models/Qwen3.6-27B/1cda14dd71a3f47115850eb790f416f165da1cb5",
+    "container_path": "/models/target",
+    "mode": "ro",
+    "verified_bytes": 55586101287
+  },
+  "gpt": {
+    "repository": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "login_scratch": "@LOCAL_ROOT@/models/gpt-oss-120b/b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "shared_host_path": "@SHARED_ROOT@/models/gpt-oss-120b/b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "container_path": "/models/target",
+    "mode": "ro",
+    "verified_bytes": 65276859410
+  }
+}

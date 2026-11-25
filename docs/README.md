@@ -6,3 +6,5 @@
 | [Hardware](hardware.md) | Which GPUs and resource limits applied? |
 | [Findings](findings.md) | What ran, and did the agent improve it? |
 | [Acceptance](acceptance/README.md) | How were the requests, scores and solver submission checked? |
+| [Variability](acceptance/variability.md) | How much did the repetitions vary within each arm? |
+| [GPU reproduction](../RUN.md) | How can another cluster rebuild the port and rerun the tests? |

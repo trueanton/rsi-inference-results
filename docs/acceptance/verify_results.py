@@ -1,11 +1,15 @@
 """Recompute paired A/A scores and verify workload coverage using only the standard library."""
 import csv
+import hashlib
 import json
 import math
 import re
 from collections import defaultdict
 from pathlib import Path
 from statistics import geometric_mean, mean
+from zipfile import ZipFile
+
+from variation import render
 
 ROOT = Path(__file__).resolve().parents[2]
 WORKLOADS = {
@@ -63,28 +67,82 @@ def scores_for_side(task, rows, pins):
     return {name: trimmed_mean(values) for name, values in scores.items()}
 
 
+def read_measurements(data, filename="raw-measurements.csv"):
+    with (data / filename).open(newline="") as stream:
+        rows = list(csv.DictReader(stream))
+    with ZipFile(data / "timed-json.zip") as archive:
+        require(sorted(archive.namelist()) == sorted(r["evidence"] for r in rows), "Raw file list mismatch")
+        for row in rows:
+            record = json.loads(archive.read(row["evidence"]))
+            for key in row.keys() - {"side", "workload", "profile", "evidence"}:
+                require(str(record[key]) == row[key], f"{row['evidence']}: raw JSON differs for {key}")
+    return rows
+
+
 def verify_task(folder):
     data = folder / "results"
     recorded = json.loads((data / "summary.json").read_text())
     pins = json.loads((folder / "environment/pins/runtime.json").read_text())
-    with (data / recorded["raw"]).open(newline="") as stream:
-        rows = list(csv.DictReader(stream))
+    key = "gpt" if "gpt_oss" in folder.name else "qwen"
+    lock = (ROOT / "reproduction/configs" / f"{key}-upstream-runtime.lock").read_bytes()
+    audit = json.loads((folder / "environment/pins/runtime-lock-audit.json").read_text())
+    require(not audit["errors"] and audit["lock_sha256"] == hashlib.sha256(lock).hexdigest(), "Runtime lock mismatch")
+    require(f"random-prompt seed: {pins['benchmark_seed']} " in (data / "benchmark-settings.txt").read_text(),
+            "Benchmark seed mismatch")
+    rows = read_measurements(data, recorded["raw"])
+    correctness = json.loads((data / "correctness.json").read_text())
+    per_prompt = correctness["per_prompt"]
+    require(correctness["correctness_ok"] is recorded["correctness_passed"] is True and
+            len(per_prompt) == correctness["num_prompts"] == recorded["prompts"] and
+            sum(p["n_passing"] for p in per_prompt) == correctness["num_positions_passing"] == recorded["correct_positions"] and
+            sum(p["n_positions"] for p in per_prompt) == correctness["num_positions_total"] == recorded["total_positions"],
+            "Correctness evidence mismatch")
+    require(recorded["agent_speedup"] is None and recorded["native_h100_score"] is None, "Unexpected score")
     require(len(rows) == recorded["measured_runs"], "Unexpected measurement count")
     require(len({row["evidence"] for row in rows}) == len(rows), "Duplicate archived measurement")
     require({row["side"] for row in rows} == set(SIDES), "Missing or unknown comparison arm")
     arms = {side: scores_for_side(folder.name, [r for r in rows if r["side"] == side], pins) for side in SIDES}
     ratio = geometric_mean(arms["candidate"][k] / arms["pristine"][k] for k in WORKLOADS)
     require(math.isclose(ratio, recorded["paired_unchanged_ratio"], rel_tol=0, abs_tol=5e-8), "Paired ratio mismatch")
+    bench = json.loads((data / "bench.json").read_text())
+    require(bench["candidate_provenance"]["tree_sha"] == pins["measured_engine_tree"]
+            and bench["candidate_provenance"]["worktree_clean"], "Wrong qualification tree")
+    require(bench["num_warmup"] == pins["warmups"] and bench["boots"]["decode_heavy"] == pins["decode_boots"],
+            "Benchmark settings mismatch")
+    for k in WORKLOADS:
+        original = bench["per_workload"][k]
+        require(original["baseline_source"] == "live_pristine", "Missing live baseline")
+        for side in SIDES:
+            require(math.isclose(arms[side][k], original[side + "_stats"]["trimmed_mean"], rel_tol=1e-12),
+                    f"{side}/{k}: score differs from benchmark output")
+    require(math.isclose(ratio, bench["speedup_geomean"], rel_tol=1e-12), "Archived ratio mismatch")
     total = sum(int(r["completed"]) for r in rows)
     require(total == recorded["completed_requests"] and recorded["failed_requests"] == 0, "Request total mismatch")
     if recorded["solver_attempts"]:
         solver = json.loads((data / "solver-result.json").read_text())
         verifier = json.loads((data / "verifier-metrics.json").read_text())
+        extra = read_measurements(data / "solver-profiling")
+        for side in SIDES:
+            group = [r for r in extra if r["side"] == side]
+            scores_for_side(folder.name, group, pins)
+            counts = solver["additional_unchanged_profiling"][side]
+            require(counts == {"measurements": len(group), "completed": sum(int(r["completed"]) for r in group),
+                               "failed": sum(int(r["failed"]) for r in group)}, "Solver profile count mismatch")
+        require(len(extra) == sum(s["measurements"] for s in solver["additional_unchanged_profiling"].values()),
+                "Unknown profiling arm")
+        print(f"GPT solver profiling (separate): {len(extra)} measurements, "
+              f"{sum(int(r['completed']) for r in extra):,} requests")
         final = solver["final_verifier"]
         proof = final["tree_proof"]
+        require(proof == json.loads((data / "replayed-tree.json").read_text()), "Fresh replay record mismatch")
+        require(final["rewards"] == json.loads((data / "final-reward.json").read_text()), "Final reward mismatch")
+        state = (folder / "solution/candidate-state.txt").read_text().splitlines()
+        require(state == [proof["solver_commit"], proof["solver_base_commit"], proof["archived_tree"], proof["archived_tree"]], "Archived tree record mismatch")
         require(proof["working_tree_clean"] and proof["archived_tree"] == proof["fresh_tree"] == pins["measured_engine_tree"], "Tree mismatch")
         require(proof["solver_commit"] == proof["solver_base_commit"] and proof["fresh_commit"] == proof["fresh_base_commit"], "Unexpected source change")
         require(verifier["reason"] == final["reason"] == "no_patch" and final["rewards"]["reward"] == 0, "Verifier mismatch")
+        require(verifier["classification_kind"] == final["classification"] == "empty" and
+                recorded["local_optimization_reward"] == final["rewards"]["reward"], "Edit gate mismatch")
         patch = (folder / "solution/candidate.patch").read_bytes()
         require(len(patch) == solver["committed_patch_bytes"] == solver["uncommitted_patch_bytes"] == 0, "Unexpected solver patch")
     print(f"{pins['model']}: {len(rows)} measurements, {total:,} requests, {ratio:.6f}×")
@@ -95,7 +153,8 @@ def main():
     summaries = sorted((ROOT / "tasks").glob("*/results/summary.json"))
     require(len(summaries) == 2, "Expected both campaign tasks")
     results = [verify_task(p.parents[1]) for p in summaries]
-    print(f"Verified {sum(n for n, _ in results)} measurements and {sum(t for _, t in results):,} requests.")
+    require(Path(__file__).with_name("variability.md").read_text() == render(), "Stale variability table")
+    print(f"Verified {sum(n for n, _ in results)} qualification measurements and {sum(t for _, t in results):,} requests.")
 
 
 if __name__ == "__main__":

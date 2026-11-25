@@ -20,5 +20,12 @@
     "decode_heavy": 1,
     "prefill_heavy": 5,
     "high_load_per_concurrency": 1
-  }
+  },
+  "benchmark_seed": 1795580955,
+  "correctness_context_tokens": 4096,
+  "correctness_gpu_memory_utilization": 0.85,
+  "benchmark_gpu_memory_utilization": 0.85,
+  "checkpoint_top_level_bytes": 55586101287,
+  "unpacked_image_bytes": 24411957786,
+  "oci_archive_sha256": "517f2949c2383443311f3be9a6cb02458cf93c8f7e687c1e736147cff381198e"
 }

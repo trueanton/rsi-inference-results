@@ -1,0 +1,11 @@
+--- a/run_correctness.py
++++ b/run_correctness.py
+@@ -112,7 +112,7 @@
+     llm = LLM(
+         model=os.environ["INFB_PROBE_MODEL"],
+         tensor_parallel_size=int(os.environ.get("INFB_PROBE_TP", "1")), dtype="bfloat16", trust_remote_code=True,
+-        max_model_len=4096, gpu_memory_utilization=0.85,
++        max_model_len=4096, gpu_memory_utilization=float(os.environ.get("INFB_CORRECTNESS_GPU_MEM_UTIL", "0.85")),
+         enforce_eager=False, seed=0,
+         # Engine config MIRRORS the scored correctness gate: a probe that
+         # loads the model into a different engine cannot predict that gate.

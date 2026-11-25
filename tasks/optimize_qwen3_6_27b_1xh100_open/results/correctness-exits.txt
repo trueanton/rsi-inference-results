@@ -1,0 +1,2 @@
+[run_correctness] baseline rc=0 elapsed=99s
+[run_correctness] check rc=0 elapsed=78s

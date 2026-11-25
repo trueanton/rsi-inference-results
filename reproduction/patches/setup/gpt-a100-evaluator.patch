@@ -1,0 +1,18 @@
+--- a/task.toml
++++ b/task.toml
+@@ -29,5 +29,5 @@
+ # H100-only: the baseline was produced on H100 (sm_90). Running on B200 (sm_100) would
+ # invalidate that baseline, because MXFP4 / fused-MoE kernel selection differs.
+-gpu_types = ["H100"]
++gpu_types = ["A100"]
+ allow_internet = false
+ workdir = "/app"
+--- a/tests/verify_throughput_real.py
++++ b/tests/verify_throughput_real.py
+@@ -142,5 +142,5 @@
+ 
+ MODEL_ID   = "openai/gpt-oss-120b"
+-EXPECTED_GPU_TYPES = ['H100']
++EXPECTED_GPU_TYPES = ['A100']
+ EXPECTED_GPU_COUNT = 2
+ TP_SIZE    = 2

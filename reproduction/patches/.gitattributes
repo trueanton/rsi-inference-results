@@ -1,0 +1,2 @@
+# A blank context line in a unified diff is a single space. Preserve the archived patch bytes.
+setup/*.patch whitespace=-blank-at-eol,-blank-at-eof
