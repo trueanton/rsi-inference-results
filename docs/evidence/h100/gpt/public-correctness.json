@@ -1,0 +1,154 @@
+{
+  "comparison": "teacher_forced_logprobs",
+  "correctness_ok": true,
+  "num_prompts": 20,
+  "num_positions_passing": 1998,
+  "num_positions_total": 2000,
+  "overall_pass_rate": 0.999,
+  "atol": 0.05,
+  "rtol": 0.05,
+  "max_drift": 0.11401736736297607,
+  "source_sha256": "e86e3cc4496463040d698a1b6113dcb8bbd54a78a81a6d94109026ab12e1533f",
+  "per_prompt": [
+    {
+      "prompt_idx": 0,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.0
+    },
+    {
+      "prompt_idx": 1,
+      "n_positions": 100,
+      "n_passing": 98,
+      "pass_rate": 0.98,
+      "max_drift": 0.11401736736297607
+    },
+    {
+      "prompt_idx": 2,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.0
+    },
+    {
+      "prompt_idx": 3,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.0
+    },
+    {
+      "prompt_idx": 4,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.0
+    },
+    {
+      "prompt_idx": 5,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.0
+    },
+    {
+      "prompt_idx": 6,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.0
+    },
+    {
+      "prompt_idx": 7,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.0
+    },
+    {
+      "prompt_idx": 8,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.0
+    },
+    {
+      "prompt_idx": 9,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.0
+    },
+    {
+      "prompt_idx": 10,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.0
+    },
+    {
+      "prompt_idx": 11,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.0
+    },
+    {
+      "prompt_idx": 12,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.0
+    },
+    {
+      "prompt_idx": 13,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.0
+    },
+    {
+      "prompt_idx": 14,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.0
+    },
+    {
+      "prompt_idx": 15,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.0
+    },
+    {
+      "prompt_idx": 16,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.0
+    },
+    {
+      "prompt_idx": 17,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.0
+    },
+    {
+      "prompt_idx": 18,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.0
+    },
+    {
+      "prompt_idx": 19,
+      "n_positions": 100,
+      "n_passing": 100,
+      "pass_rate": 1.0,
+      "max_drift": 0.0
+    }
+  ]
+}

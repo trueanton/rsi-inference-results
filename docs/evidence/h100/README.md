@@ -9,7 +9,7 @@ The Qwen and GPT directories hold the two frozen submissions from campaign `cont
 | Step-by-step reply and patch-digest ledger | [CSV](qwen/trajectory.csv) | [CSV](gpt/trajectory.csv) |
 | Official correctness and verifier log excerpt | [Correctness](qwen/official-correctness.json) · [Log](qwen/verifier-excerpt.txt) | [Correctness](gpt/official-correctness.json) · [Log](gpt/verifier-excerpt.txt) |
 | Official performance and reward | [Scores](qwen/official.json) · [Timed JSONs](qwen/official-timings.zip) · [Reward](qwen/reward.json) | [Scores](gpt/official.json) · [Timed JSONs](gpt/official-timings.zip) · [Reward](gpt/reward.json) |
-| Separate public correctness and repeat | [Correctness](qwen/public-correctness.json) · [Scores](qwen/repeat-1.json) · [Trees, allocation and checksums](qwen/repeat-1-provenance.json) · [Timed JSONs](qwen/repeat-1-timings.zip) | Pending |
+| Separate public correctness and repeat | [Correctness](qwen/public-correctness.json) · [Scores](qwen/repeat-1.json) · [Trees, allocation and checksums](qwen/repeat-1-provenance.json) · [Timed JSONs](qwen/repeat-1-timings.zip) | [Public correctness](gpt/public-correctness.json) · Repeat pending |
 
 Correctness and official score extracts carry the SHA-256 of their complete source JSON. The ZIPs contain the original timed JSON bytes. Both reply ledgers omit conversation text and model reasoning. The solver records include the digest of each distinct intermediate diff. The final patches retain the agent’s original comments, including unverified claims.
 

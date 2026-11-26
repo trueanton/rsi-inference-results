@@ -1,5 +1,9 @@
 {
   "source_sha256": "d92e3c772be9beb0243c31ba1d554f42ad4848135591bb9e4e9b5e8a2cb76790",
+  "output_shape_coverage": {
+    "blind_files": 18,
+    "gates": "none -- recorded only"
+  },
   "classification_kind": "source_edit",
   "speedup_geomean": 0.9996132748026108,
   "speedup_per_workload": {

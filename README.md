@@ -4,7 +4,7 @@ A local GPT-OSS-120B coding agent attempted Apple’s original Qwen3.6-27B task 
 
 ## Results
 
-Snapshot on 26 November 2026 at 12:18 UTC. The official column records Apple’s pinned verifier running on our cluster. The repeat compares the frozen patch with a freshly timed pristine engine in a separate measurement by the same operator. Ratios above 1 favor the patch.
+Snapshot on 26 November 2026 at 12:27 UTC. The official column records Apple’s pinned verifier running on our cluster. The repeat compares the frozen patch with a freshly timed pristine engine in a separate measurement by the same operator. Ratios above 1 favor the patch.
 
 | Task and target | Solver | Frozen patch | Official correctness | Official speedup | Separate repeat | Outcome |
 | --- | --- | --- | --- | ---: | ---: | --- |

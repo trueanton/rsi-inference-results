@@ -2,3 +2,4 @@
 [live-ref] rc=-6 elapsed=191.2s
 (rc=-6 but npz present + valid — trusting file)
 correctness_ok=True  pass_rate=0.9998991732204073
+[real] reward=0.000  speedup={'decode_heavy': 0.9759830354870114, 'prefill_heavy': 0.9910774849936587, 'high_load': 0.9954885910919581}

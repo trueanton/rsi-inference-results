@@ -359,8 +359,6 @@ def verify_optimization(folder, display, pins):
     row, = [line for line in readme if line.startswith(f"| [{display} ·")]
     for gate in ("official", "public"):
         path = folder / f"{gate}-correctness.json"
-        if gate == "public" and name == "gpt" and not path.exists() and not (folder / "repeat-1.json").exists():
-            continue
         correctness = json.loads(path.read_bytes())
         prompts = correctness["per_prompt"]
         if gate == "official":
