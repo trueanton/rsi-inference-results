@@ -1,0 +1,3 @@
+[verifier] prompt seed for this eval (cand+pris shared): 1795666906 (set INFB_BENCH_SEED=<int> to pin/reproduce)
+[live-ref] rc=0 elapsed=143.3s
+correctness_ok=True  pass_rate=0.9948764315852924

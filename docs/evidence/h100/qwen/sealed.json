@@ -1,0 +1,8 @@
+{
+  "base_tree": "a69e2f27fcaaeab14a5dd83d5477d5483156ce5e",
+  "candidate_tree": "9aea45fa61a4920e01c55135283d83943d0c66a4",
+  "forbidden_build_products": [],
+  "job": "546151",
+  "patch_sha256": "a1e40ae3773939c89df436b815b31dc2865519418656c5f2c86b0509ecbe3405",
+  "task": "optimize_qwen3_6_27b_1xh100_open"
+}

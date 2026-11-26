@@ -1,0 +1,70 @@
+{
+  "arms": {
+    "pristine": [
+      {
+        "date": "20261125-185210",
+        "duration": 163.63424514583312,
+        "output_throughput": 200.25148141085444,
+        "median_tpot_ms": 4.990634988219559
+      },
+      {
+        "date": "20261125-185454",
+        "duration": 157.58415054506622,
+        "output_throughput": 207.93969372337952,
+        "median_tpot_ms": 4.80617620627654
+      },
+      {
+        "date": "20261125-185733",
+        "duration": 151.244656217983,
+        "output_throughput": 216.6555884974393,
+        "median_tpot_ms": 4.611749304897953
+      },
+      {
+        "date": "20261125-190011",
+        "duration": 150.93690171395428,
+        "output_throughput": 217.0973408616785,
+        "median_tpot_ms": 4.599616849118351
+      },
+      {
+        "date": "20261125-190249",
+        "duration": 151.0039811360184,
+        "output_throughput": 217.00090125758925,
+        "median_tpot_ms": 4.6043767354432585
+      }
+    ],
+    "candidate": [
+      {
+        "date": "20261125-192209",
+        "duration": 163.50922862510197,
+        "output_throughput": 200.40459046584635,
+        "median_tpot_ms": 4.984406590290156
+      },
+      {
+        "date": "20261125-192454",
+        "duration": 157.58105381787755,
+        "output_throughput": 207.9437800807655,
+        "median_tpot_ms": 4.8069135246005
+      },
+      {
+        "date": "20261125-192732",
+        "duration": 151.04292515898123,
+        "output_throughput": 216.9449510164731,
+        "median_tpot_ms": 4.6048296377761595
+      },
+      {
+        "date": "20261125-193010",
+        "duration": 151.09758083708584,
+        "output_throughput": 216.86647673949605,
+        "median_tpot_ms": 4.607937721099067
+      },
+      {
+        "date": "20261125-193249",
+        "duration": 151.1275793700479,
+        "output_throughput": 216.82342916222422,
+        "median_tpot_ms": 4.60806003772973
+      }
+    ]
+  },
+  "ratio": 0.9999592720691625,
+  "description": "Descriptive event-phase control with five repeated identical workloads in one live server per arm."
+}

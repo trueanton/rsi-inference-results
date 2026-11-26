@@ -1,16 +1,20 @@
-# Qwen3.6-27B on H100 and A100
+# Qwen3.6-27B on H100
+
+`optimize_qwen3_6_27b_1xh100_open`
+
+Correctness passed; no measured speedup. The pinned verifier scored **0.99961×**. The first independent repeat measured **1.00004×**. [Optimization report](../../docs/findings.md#qwen-submission) · [Submitted patch](../../docs/evidence/h100/qwen/candidate.patch)
 
 ## H100 qualification
 
 Job 543431 completed on 1 × H100 at TP=1. It passed correctness on 1,994/2,000 positions and completed 4,104 measured requests across both unchanged arms. The original verifier returned `no_patch`. [Run record](results/h100/optimize_qwen3_6_27b_1xh100_open_h100_baseline_20261125T103758Z_543431/summary.json) · [Pristine-arm timings](results/h100/optimize_qwen3_6_27b_1xh100_open_h100_baseline_20261125T103758Z_543431/pristine-profiles.csv) · [H100 measurement notes](../../docs/h100.md)
 
-## A100 qualification
+## Historical hardware-adapted A100 campaign
 
 **Assigned single-GPU task:** The 64 transformer layers alone contain 48,706,393,088 BF16 bytes. A 40 GiB device has 42,949,672,960 nominal bytes. That leaves a 5,756,720,128-byte deficit before embeddings, KV cache and workspace.
 
 **Two-GPU diagnostic:** The original BF16 checkpoint completed all three workloads at tensor parallelism 2. Both arms together completed **4,104 timed requests with zero failures**. No solver ran on either configuration. Agent speedup is N/A. [Summary](results/summary.json) · [Original Apple task](https://github.com/apple-aiml-research/ml-rsi-inference-bench/tree/1a38072fbe284234c874356b86c9df666a5a79a3/tasks/optimize_qwen3_6_27b_1xh100_open)
 
-## Workload and scores
+### Workload and scores
 
 | Workload | Input tokens | Output tokens | Requests per repetition | Concurrency |
 | --- | ---: | ---: | ---: | --- |
@@ -30,7 +34,7 @@ The combined self-ratio was **0.999820×**. Each arm completed 2,052 timed reque
 
 The single decode observation was 23.77341 ms/token in the candidate arm and 23.76841 in pristine. There is one high-load repetition per concurrency and arm, so those profiles also lack a between-repetition SD. Across five prefill repetitions the means of the median TTFTs were 1,203.78 ms (candidate) and 1,203.74 ms (pristine). The prefill score above uses trimmed reciprocal latencies. [Variation by profile and arm](../../docs/acceptance/variability.md) · [Harness output](results/bench.json)
 
-## Build and audit
+### Build and audit
 
 The clean image matched all 200 upstream Qwen package pins. Its pip check reported two conflicts with Torch 2.11.0+cu128, for CUDA bindings and toolkit versions. The earlier image and its derivative rebuilds reused GPT dependencies. Their measurements were excluded. [Environment pins](environment/pins/runtime.json) · [Dependency check](results/pip-check.txt)
 

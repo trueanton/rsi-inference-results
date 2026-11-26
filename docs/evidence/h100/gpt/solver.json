@@ -1,0 +1,127 @@
+{
+  "model": "openai/gpt-oss-120b",
+  "model_revision": "bc75b44b8a2a116a0e4c6659bcd1b7969885f423",
+  "settings": {
+    "max_tokens": 3072,
+    "temperature": 0.6,
+    "reasoning_effort": "medium",
+    "tool_choice": "auto",
+    "parallel_tool_calls": false,
+    "stream": false,
+    "stop_token_ids": [
+      200002,
+      200012
+    ]
+  },
+  "context": 32768,
+  "model_service_args": [
+    "--model",
+    "/model",
+    "--served-model-name",
+    "openai/gpt-oss-120b",
+    "--enable-auto-tool-choice",
+    "--tool-call-parser",
+    "openai",
+    "--tensor-parallel-size",
+    "2",
+    "--max-model-len",
+    "32768",
+    "--enforce-eager",
+    "--max-num-seqs",
+    "2",
+    "--max-num-batched-tokens",
+    "2048",
+    "--gpu-memory-utilization",
+    "0.95",
+    "--kv-cache-memory-bytes",
+    "8589934592",
+    "--uds",
+    "/private-uds/model.sock"
+  ],
+  "developer_prompt": "Complete the user's task in the offline sandbox. Use bash for all inspections, edits and tests. Each command starts in a fresh shell in the sandbox's configured working directory /app/repo. The public helpers are in /app/scripts and workloads in /app/public. Use /opt/venv/bin/python for the qualified runtime. Profile the frozen baseline before editing, check correctness and paired performance, and commit the best verified source within the task timer. Include your current working hypothesis with each call. Use the observed results to decide what to do next. Long output is excerpted. To inspect another part, run a focused command in the sandbox. A controller checkpoint may summarize older commands and quote their output and source changes. Return a final assistant message when finished.",
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "bash",
+        "description": "Execute one Bash script in the task sandbox.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string",
+              "description": "Script to execute."
+            },
+            "hypothesis": {
+              "type": "string",
+              "maxLength": 800,
+              "description": "Current working hypothesis or objective of this command."
+            }
+          },
+          "required": [
+            "command",
+            "hypothesis"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  ],
+  "attempts": [
+    {
+      "job": "545909",
+      "stage": "trials",
+      "controller_sha256": "5688ea3f1316f6ee2348b84d54310e220877523d0c678b2a7fd9f2e0d3868c4f",
+      "started_utc": "2026-11-25T19:57:41+00:00",
+      "stopped_utc": "2026-11-25T20:00:37.634423+00:00",
+      "stop_reason": "controller_error",
+      "remaining_seconds_at_restart": null,
+      "delivered_replies": 0
+    },
+    {
+      "job": "546144",
+      "stage": "recovery-trials",
+      "controller_sha256": "6feebd83d358c2fd600b615c8cf97cf6603a26fe14080cdab63f541ef87627b5",
+      "started_utc": "2026-11-25T20:07:45+00:00",
+      "stopped_utc": "2026-11-25T20:56:50.250967+00:00",
+      "stop_reason": "controller_error",
+      "remaining_seconds_at_restart": 29395,
+      "delivered_replies": 21
+    },
+    {
+      "job": "546176",
+      "stage": "checkpoint-trials",
+      "controller_sha256": "a97e165c1efc5181935774f1447a35a9978db6f89684f8144927ad6ab608f8e1",
+      "started_utc": "2026-11-25T21:00:52+00:00",
+      "stopped_utc": "2026-11-26T03:38:01.716026+00:00",
+      "stop_reason": "final_answer",
+      "remaining_seconds_at_restart": 26208,
+      "delivered_replies": 436
+    }
+  ],
+  "model_replies": 457,
+  "context_tokens": 32768,
+  "completion_reserve": 3072,
+  "max_rendered_prompt": 28453,
+  "max_observed_total": 29097,
+  "prompt_tokens": 4356624,
+  "completion_tokens": 107569,
+  "original_budget_seconds": 30000,
+  "elapsed_to_last_controller_stop_seconds": 27620.701,
+  "stop_reason": "final_answer",
+  "snapshots_verified": 459,
+  "final_patch_sha256": "aeab2417beaa080e9862019a5ca334ae75fb24f6a61ee2e3e601ea6c6097c141",
+  "distinct_intermediate_patch_digests": [
+    "1769a2e95ad6b1c6cd0798ec59ec205ac18db337e79d4d7b6017e2d920299136",
+    "4ae5060fd5f6c0269f9aeba939db4de477456d6b7723822508b856b45b95461c",
+    "50521705e7043767eaf5d40e3be8b5a1f230d17c8efe59661d62d6f49925e525",
+    "bbfed73481c35ef4efeca083b947d48a467dde62eb7983559d26b64ba39fed29",
+    "c59153fd7f71febb339849c762cdf38d455ea59844b3c2306fcc94a6e1230b61",
+    "cc7dd15dc3e7153b4972251278dc3b4e24b064220df207d260d0dafb94064877",
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  ],
+  "task_prompt": {
+    "sha256": "8cafdfc4f4861f7c68a6a491bd0b4a5c93d86d6b261c4fba006c9f1c44d27309",
+    "url": "https://github.com/apple-aiml-research/ml-rsi-inference-bench/blob/1a38072fbe284234c874356b86c9df666a5a79a3/tasks/optimize_gpt_oss_120b_2xh100_open/instruction.md"
+  }
+}

@@ -2,6 +2,8 @@
 
 For the A100 campaign, the original server-side audit checked every archived measurement against the workload definition, including the counts of completed requests, input and output tokens. The CSV exports preserve one row per timed repetition and the original evidence filename. Both arms ran unmodified engine code.
 
+The H100 optimization checks validate the frozen patch hashes, recorded solver calls and context budgets, per-prompt correctness totals and published speedups against the original timed JSONs. [Optimization evidence](../evidence/h100/README.md)
+
 ## Recompute the published results
 
 ```sh
@@ -10,7 +12,7 @@ python3 docs/acceptance/verify_results.py
 
 Run from the repository root with Python 3.9 or later. The checker verifies the recorded request counts, token counts, concurrency and repetitions. It computes the decode score as 1,000 divided by median time per output token in milliseconds, and the prefill score as 1,000 divided by median time to first token in milliseconds. For high load it takes the geometric mean of requests/s at concurrency 16, 32 and 64 within each repetition. With at least three repetition scores, the harness drops the minimum and maximum before averaging. The final ratio is the geometric mean of the three workload ratios.
 
-## Outcomes and exceptions
+## Historical A100 outcomes and exceptions
 
 | Stage | Evidence and interpretation |
 | --- | --- |

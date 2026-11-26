@@ -1,0 +1,55 @@
+{
+  "source_sha256": "d92e3c772be9beb0243c31ba1d554f42ad4848135591bb9e4e9b5e8a2cb76790",
+  "classification_kind": "source_edit",
+  "speedup_geomean": 0.9996132748026108,
+  "speedup_per_workload": {
+    "decode_heavy": 1.0013688666407883,
+    "high_load": 1.0012889839722987,
+    "prefill_heavy": 0.9961907889938424
+  },
+  "primary_metric_per_workload": {
+    "decode_heavy": "tpot_ms",
+    "high_load": "request_throughput",
+    "prefill_heavy": "ttft_ms"
+  },
+  "candidate_tps_runs": {
+    "decode_heavy": [
+      48.81689726745547
+    ],
+    "high_load": [
+      1.0217601626668764
+    ],
+    "prefill_heavy": [
+      1.3996631952586895,
+      1.3989926925104212,
+      1.3989448857147768,
+      1.3994798706619593,
+      1.401247309154434
+    ]
+  },
+  "pristine_tps_runs": {
+    "decode_heavy": [
+      48.75016479313721
+    ],
+    "high_load": [
+      1.0204448256420087
+    ],
+    "prefill_heavy": [
+      1.401453205662317,
+      1.404550224186988,
+      1.4047441268688996,
+      1.4048941405594664,
+      1.4072161536203316
+    ]
+  },
+  "candidate_tps_per_workload": {
+    "decode_heavy": 48.81689726745547,
+    "high_load": 1.0217601626668764,
+    "prefill_heavy": 1.39937858614369
+  },
+  "pristine_tps_per_workload": {
+    "decode_heavy": 48.75016479313721,
+    "high_load": 1.0204448256420087,
+    "prefill_heavy": 1.404729497205118
+  }
+}

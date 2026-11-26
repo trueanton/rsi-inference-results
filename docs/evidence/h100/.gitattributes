@@ -1,0 +1,2 @@
+# An empty unified-diff context line contains one space. The checker verifies the archived bytes by SHA-256.
+*/candidate.patch whitespace=-blank-at-eol,-blank-at-eof

@@ -1,0 +1,68 @@
+{
+  "vllm_serve_decode_heavy_cand_57285.log": {
+    "attention": [
+      "FLASH_ATTN"
+    ],
+    "flashattention_version": [
+      "3"
+    ],
+    "max_model_len": [
+      "16384"
+    ]
+  },
+  "vllm_serve_decode_heavy_pristine_51145.log": {
+    "attention": [
+      "FLASH_ATTN"
+    ],
+    "flashattention_version": [
+      "3"
+    ],
+    "max_model_len": [
+      "16384"
+    ]
+  },
+  "vllm_serve_high_load_cand_59777.log": {
+    "attention": [
+      "FLASH_ATTN"
+    ],
+    "flashattention_version": [
+      "3"
+    ],
+    "max_model_len": [
+      "16384"
+    ]
+  },
+  "vllm_serve_high_load_pristine_37363.log": {
+    "attention": [
+      "FLASH_ATTN"
+    ],
+    "flashattention_version": [
+      "3"
+    ],
+    "max_model_len": [
+      "16384"
+    ]
+  },
+  "vllm_serve_prefill_heavy_cand_52901.log": {
+    "attention": [
+      "FLASH_ATTN"
+    ],
+    "flashattention_version": [
+      "3"
+    ],
+    "max_model_len": [
+      "16384"
+    ]
+  },
+  "vllm_serve_prefill_heavy_pristine_52407.log": {
+    "attention": [
+      "FLASH_ATTN"
+    ],
+    "flashattention_version": [
+      "3"
+    ],
+    "max_model_len": [
+      "16384"
+    ]
+  }
+}

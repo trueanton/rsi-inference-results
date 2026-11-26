@@ -1,73 +1,26 @@
-# RSI inference benchmarks on A100 and H100
+# Coding-agent optimization on H100
 
-**[A100 results](docs/a100.md)** · **[H100 results](docs/h100.md)**
+A local GPT-OSS-120B coding agent attempted Apple’s original Qwen3.6-27B task on **1 × H100** and GPT-OSS-120B task on **2 × H100**. A custom offline controller gave the solver one Bash tool and a 30,000-second budget per task. Two additional H100s served the solver in each attempt. [Solver configuration and recovery history](docs/findings.md#solver-and-budget)
 
-**Both of Apple’s original inference tasks ran on their assigned H100 hardware.** Qwen3.6-27B ran on one 80 GB H100 at tensor parallelism 1 (TP=1). GPT-OSS-120B ran on two 80 GB H100s at TP=2. Both passed public correctness and completed all three public serving workloads. The H100 campaign tested the unchanged baselines. The original verifier recorded `no_patch` for each, so speedup from a patch is N/A.
+## Results
 
-The A100 campaign ran the same public workloads on 40 GiB GPUs. GPT required different memory settings. Qwen exceeded the capacity of one A100 and qualified separately on two. Each hardware report links to its own run records.
+Snapshot on 26 November 2026 at 11:36 UTC. The official column records Apple’s pinned verifier running on our cluster. The repeat compares the frozen patch with a freshly timed pristine engine in a separate measurement by the same operator. Ratios above 1 favor the patch.
 
-## Published reference results
+| Task and target | Solver | Frozen patch | Official correctness | Official speedup | Separate repeat | Outcome |
+| --- | --- | --- | --- | ---: | ---: | --- |
+| [Qwen3.6-27B · 1 × H100](tasks/optimize_qwen3_6_27b_1xh100_open/) | GPT-OSS-120B | [Triton softmax segments](docs/evidence/h100/qwen/candidate.patch) | [Passed · 9,903/9,954](docs/evidence/h100/qwen/official-correctness.json) | [0.99961×](docs/evidence/h100/qwen/official.json) | [1.00004×](docs/evidence/h100/qwen/repeat-1.json) | Correctness passed; no measured speedup. |
+| [GPT-OSS-120B · 2 × H100](tasks/optimize_gpt_oss_120b_2xh100_open/) | GPT-OSS-120B | [Cache and engine defaults](docs/evidence/h100/gpt/candidate.patch) | [Passed · 9,917/9,918](docs/evidence/h100/gpt/official-correctness.json) | Pending | Pending | [Performance verification running, job 546422](docs/evidence/h100/slurm.csv). |
 
-Apple compares an agent-modified engine with the pristine task baseline on the same GPUs and checks correctness before awarding a speedup. Both tasks allow about 8.3 hours of agent time. [Pinned Apple leaderboard](https://github.com/apple-aiml-research/ml-rsi-inference-bench/blob/1a38072fbe284234c874356b86c9df666a5a79a3/docs/leaderboard.html)
+Earlier qualification jobs timed unchanged engines and returned `no_patch`. The later agent attempts each produced a nonempty submission. Request completion, teacher-forced correctness and performance are reported separately. [Optimization report and workload scores](docs/findings.md) · [Baseline qualification](docs/h100.md)
 
-| Task and assigned hardware | Best agent on Apple’s leaderboard | Published speedup vs. task baseline | Our H100 status |
-| --- | --- | ---: | --- |
-| Qwen3.6-27B · 1 × H100 | Sonnet-5.5 | 1.385× | Baseline qualified; agent optimization not yet evaluated. |
-| GPT-OSS-120B · 2 × H100 | Opus-5.5 | 1.382× | Baseline qualified; agent optimization not yet evaluated. |
+## Apple’s externally reported results
 
-Our H100 campaign measured unchanged baselines. We have not reproduced Apple’s optimization results. The A100–H100 ratios below compare complete serving configurations.
+Apple’s pinned leaderboard lists **1.385×** for Sonnet-5.5 on the Qwen task and **1.382×** for Opus-5.5 on the GPT-OSS task. Our runs used a different solver. We have not independently reproduced those leaderboard submissions. [Apple leaderboard at the benchmark revision](https://github.com/apple-aiml-research/ml-rsi-inference-bench/blob/1a38072fbe284234c874356b86c9df666a5a79a3/docs/leaderboard.html)
 
-## Side-by-side comparison
-
-The tables compare the pristine arm of each qualification run. Concurrency (c) is the maximum number of requests in flight. Both campaigns used the same benchmark revision, input/output lengths and repetitions per model. The prompt seeds differed between clusters. Prefill latency averages the middle three of five repetition medians. The arrows show the favorable direction for each metric.
-
-### Qwen3.6-27B · BF16
-
-One 40 GiB A100 could not fit the checkpoint. The A100 column uses the two-GPU diagnostic at TP=2. The H100 column uses the assigned single 80 GB GPU at TP=1. Both ran the same checkpoint revision.
-
-| Workload | Metric | 2 × A100 | 1 × H100 |
-| --- | --- | ---: | ---: |
-| Decode, c1 | Time per output token (ms/token) ↓ | 23.77 | 20.52 |
-| Prefill, c1 | Time to first token (ms) ↓ | 1,203.60 | 711.19 |
-| High load, c16 | Requests/s ↑ | 0.5200 | 0.6477 |
-| High load, c32 | Requests/s ↑ | 0.8716 | 1.1171 |
-| High load, c64 | Requests/s ↑ | 1.1096 | 1.4641 |
-
-At concurrency 64 the H100 configuration served 1.32× as many requests per second. At concurrency 16 and 32 it also served more requests per second, but requests waited longer for their first token. At concurrency 16, for example, median TTFT was 525 ms on the A100 pair and 1,022 ms on the H100.
-
-### GPT-OSS-120B · MXFP4
-
-Both runs used two GPUs at TP=2 and the same vLLM source tree. The two model revisions have identical hashes for all 15 weight shards and differ in their generation defaults. A100 used 95% GPU memory utilization and Marlin MXFP4. H100 used 80% and Triton MXFP4. [Checkpoint and runtime details](docs/h100.md#setup-and-evidence)
-
-| Workload | Metric | 2 × A100 | 2 × H100 |
-| --- | --- | ---: | ---: |
-| Decode, c1 | Time per output token (ms/token) ↓ | 6.11 | 5.00 |
-| Prefill, c1 | Time to first token (ms) ↓ | 646.72 | 163.98 |
-| High load, c16 | Requests/s ↑ | 1.1415 | 1.9348 |
-| High load, c32 | Requests/s ↑ | 1.5029 | 3.0272 |
-| High load, c64 | Requests/s ↑ | 1.5062 | 4.5528 |
-
-At concurrency 64 the H100 pair served 3.02× as many requests per second as the A100 pair. That ratio compares the two complete serving configurations. Within the H100 run itself, the unchanged arms differed by 8.23% on the decode score. The cause remains open. [H100 control measurements](docs/h100.md#interpreting-the-paired-results)
-
-### Tail latency
-
-At concurrency 64, p99 time to first token was **46.28 s on A100 and 20.11 s on H100** for the Qwen configurations above. For GPT-OSS it was **24.63 s and 1.31 s**, respectively. The separate reports give p95 and p99 at every measured concurrency. [A100 tail latency](docs/a100.md#tail-latency) · [H100 tail latency](docs/h100.md#tail-latency)
-
-## Reproduce and extend the results
-
-Run the offline check from a clone with Python 3.9 or later. For A100 it compares the CSVs with the archived timed JSONs and checks scores, correctness and final-tree records. For H100 it checks both arms against the original timed JSONs, reproduces the paired scores, and verifies per-prompt correctness, native verifier rewards and sampled memory peaks. The checker also validates the side-by-side and hardware report tables.
+## Check the evidence
 
 ```sh
 python3 docs/acceptance/verify_results.py
 ```
 
-| Guide | Contents |
-| --- | --- |
-| [A100 GPU reproduction](RUN.md) | Pinned builds, model downloads, Slurm commands, memory controls and expected outputs |
-| [Task index](tasks/README.md) | Task cards, per-workload scores, checkpoints and submissions |
-| [Hardware](docs/hardware.md) and [task selection](docs/selection/README.md) | Allocation sizes, costs and rationale for the Qwen diagnostic |
-| [Findings](docs/findings.md) | What ran, measurement limitations and the proposed GPT retry |
-
-The A100 rerun guide applies to the A100 port. The H100 campaign used Slurm and Apptainer with the original H100 assignments. [H100 setup and measurements](docs/h100.md)
-
-Apple’s pinned benchmark defines the tasks. The companion study informed the organization of this repository. Each study reports its own experiments. [Upstream benchmark](https://github.com/apple-aiml-research/ml-rsi-inference-bench/tree/1a38072fbe284234c874356b86c9df666a5a79a3) · [Companion study](https://github.com/RefrainTC/RSI_Apple_Bench/tree/5c2a96207c65d81796636c2f31d354e3f04dd65c)
+[Task cards](tasks/README.md) · [Acceptance checks](docs/acceptance/README.md) · [Historical A100 campaign](docs/a100.md)

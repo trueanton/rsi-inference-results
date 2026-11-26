@@ -1,0 +1,8 @@
+{
+  "base_tree": "a2748086c60be2c6f6f150d02f3a7c0811a65dad",
+  "candidate_tree": "2725dc9c63e4196dd2ef5794f64d0d3efb000f51",
+  "forbidden_build_products": [],
+  "job": "546176",
+  "patch_sha256": "aeab2417beaa080e9862019a5ca334ae75fb24f6a61ee2e3e601ea6c6097c141",
+  "task": "optimize_gpt_oss_120b_2xh100_open"
+}

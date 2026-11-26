@@ -1,14 +1,18 @@
-# GPT-OSS-120B on H100 and A100
+# GPT-OSS-120B on H100
+
+`optimize_gpt_oss_120b_2xh100_open`
+
+The frozen patch passed native correctness on **9,917 of 9,918 positions**. Official and repeat performance are pending in verification job 546422. [Optimization report](../../docs/findings.md#gpt-submission) · [Submitted patch](../../docs/evidence/h100/gpt/candidate.patch)
 
 ## H100 qualification
 
 Job 543515 completed on 2 × H100 at TP=2. It passed correctness on 2,000/2,000 positions and completed 5,648 measured requests across both unchanged arms. The original verifier returned `no_patch`. [Run record](results/h100/optimize_gpt_oss_120b_2xh100_open_h100_baseline_20261125T133721Z_543515/summary.json) · [Pristine-arm timings](results/h100/optimize_gpt_oss_120b_2xh100_open_h100_baseline_20261125T133721Z_543515/pristine-profiles.csv) · [H100 measurement notes](../../docs/h100.md)
 
-## A100 qualification
+## Historical hardware-adapted A100 campaign
 
 The unchanged vLLM engine served the full MXFP4 checkpoint at tensor parallelism 2. It passed public correctness and completed **5,648 timed requests with zero failures**. The bounded solver reached its context limit and left an empty source patch. Agent speedup is N/A.
 
-## Workload and scores
+### Workload and scores
 
 | Workload | Input tokens | Output tokens | Requests per repetition | Concurrency |
 | --- | ---: | ---: | ---: | --- |
@@ -30,7 +34,7 @@ The mean of the two decode repetition medians was 6.10837 ms/token in the candid
 
 Both correctness children wrote their comparison artifacts and then exited on signal 6. The public helper accepted the outputs. This qualifies the recorded comparison with a teardown failure in each subprocess. [Correctness output](results/correctness.json) · [Child exits](results/correctness-exits.txt)
 
-## Port and solver
+### Port and solver
 
 The stock 80% GPU memory setting left insufficient KV-cache capacity. At 95%, sampler startup still needed 198 MiB with 144 MiB free. Using the 95% setting with `VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=1` allowed 19,168 KV tokens. The A100 runtime selected the Marlin MXFP4 MoE and Triton attention backends. The original verifier withheld its score on A100. [Environment pins](environment/pins/runtime.json) · [Original Apple task](https://github.com/apple-aiml-research/ml-rsi-inference-bench/tree/1a38072fbe284234c874356b86c9df666a5a79a3/tasks/optimize_gpt_oss_120b_2xh100_open)
 

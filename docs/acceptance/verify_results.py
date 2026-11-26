@@ -171,10 +171,10 @@ def verify_profile_tables(task_dir, model, profiles):
             if row["side"] == "pristine":
                 a100[row["workload"], row["max_concurrency"]].append(row)
     reports = {gpu: (ROOT / f"docs/{gpu}.md").read_text().splitlines() for gpu in ("a100", "h100")}
-    readme = (ROOT / "README.md").read_text()
+    comparison = (ROOT / "docs/qualification-comparison.md").read_text()
     heading = f"### {model} ·"
-    require(readme.count(heading) == 1, f"Missing or duplicate README section for {model}")
-    section = readme.split(heading)[1].split("\n#")[0].splitlines()
+    require(comparison.count(heading) == 1, f"Missing or duplicate archived comparison section for {model}")
+    section = comparison.split(heading)[1].split("\n#")[0].splitlines()
     for h100 in profiles:
         workload, c = h100["workload"], h100["concurrency"]
         samples = a100[workload, c]
@@ -197,7 +197,14 @@ def verify_profile_tables(task_dir, model, profiles):
             "high_load": ("High load", "Requests/s ↑", "requests_per_s"),
         }[workload]
         row = [f"{label}, c{c}", metric, cells["a100"][field], cells["h100"][field]]
-        require("| " + " | ".join(row) + " |" in section, f"{model}/{workload}/c{c}: stale README comparison")
+        require("| " + " | ".join(row) + " |" in section, f"{model}/{workload}/c{c}: stale archived comparison")
+
+
+def h100_repetitions(bench):
+    reps = bench["num_runs"]
+    return {"decode_boots": bench["boots"]["decode_heavy"], "measured_repetitions": {
+        "decode_heavy": reps["decode_heavy"], "prefill_heavy": reps["prefill_heavy"],
+        "high_load_per_concurrency": reps["high_load"]}}
 
 
 def verify_h100_evidence(folder, summary, pristine):
@@ -231,10 +238,7 @@ def verify_h100_evidence(folder, summary, pristine):
                 require(math.isclose(value, float(pristine_by_profile[workload, concurrency][public_key]), rel_tol=1e-12),
                         f"H100 pristine {key} differs")
     bench = json.loads((folder / "bench.json").read_text())
-    reps = bench["num_runs"]
-    pins = {"decode_boots": bench["boots"]["decode_heavy"], "measured_repetitions": {
-        "decode_heavy": reps["decode_heavy"], "prefill_heavy": reps["prefill_heavy"],
-        "high_load_per_concurrency": reps["high_load"]}}
+    pins = h100_repetitions(bench)
     arms = {}
     for side in SIDES:
         arms[side] = scores_for_side(summary["task"], [r for r in rows if r["side"] == side], pins)
@@ -332,6 +336,74 @@ def verify_h100(outcome):
     print(f"H100 job {job['job_id']}: {2 * measured} raw timings, {2 * requests:,} verified requests across both arms")
 
 
+def verify_optimization(folder, display, pins):
+    """Check the H100 patch, controller ledger, correctness and published ratio cells."""
+    name = folder.name
+    solver = json.loads((folder / "solver.json").read_bytes())
+    sealed = json.loads((folder / "sealed.json").read_bytes())
+    patch = (folder / "candidate.patch").read_bytes()
+    require(patch and hashlib.sha256(patch).hexdigest() == sealed["patch_sha256"] == solver["final_patch_sha256"],
+            f"{name}: frozen patch checksum mismatch")
+    require(sealed["base_tree"] != sealed["candidate_tree"], f"{name}: candidate equals baseline")
+    with (folder / "trajectory.csv").open(newline="") as stream:
+        ledger = list(csv.DictReader(stream))
+    require([int(row["step"]) for row in ledger] == list(range(1, solver["model_replies"] + 1)),
+            f"{name}: missing or repeated reply")
+    for key in ("prompt_tokens", "completion_tokens"):
+        require(sum(int(row[key]) for row in ledger) == solver[key], f"{name}: {key} mismatch")
+    require(all(int(row["prompt_tokens"]) + solver["completion_reserve"] <= solver["context_tokens"]
+                and int(row["completion_tokens"]) <= solver["completion_reserve"] for row in ledger),
+            f"{name}: context or generation limit exceeded")
+
+    readme = (ROOT / "README.md").read_text().splitlines()
+    row, = [line for line in readme if line.startswith(f"| [{display} ·")]
+    for gate in ("official", "public"):
+        path = folder / f"{gate}-correctness.json"
+        if gate == "public" and name == "gpt" and not path.exists():
+            continue
+        correctness = json.loads(path.read_bytes())
+        prompts = correctness["per_prompt"]
+        if gate == "official":
+            total = sum(p["n_positions_compared"] for p in prompts)
+            passed = sum(round(p["logprob_pass_rate"] * p["n_positions_compared"]) for p in prompts)
+            require(f"{passed:,}/{total:,}" in row, f"{name}: stale README correctness")
+        else:
+            total = sum(p["n_positions"] for p in prompts)
+            passed = sum(p["n_passing"] for p in prompts)
+        require((len(prompts), passed, total) == (correctness["num_prompts"],
+                correctness["num_positions_passing"], correctness["num_positions_total"]), f"{name}: position mismatch")
+        require(correctness["correctness_ok"] and math.isclose(passed / total, correctness["overall_pass_rate"]),
+                f"{name}: correctness evidence mismatch")
+
+    if name == "qwen":
+        require((folder / "official-timings.zip").exists() and (folder / "repeat-1-timings.zip").exists(),
+                "Missing Qwen verification evidence")
+    for archive in sorted(folder.glob("*-timings.zip")):
+        stage = archive.name.removesuffix("-timings.zip")
+        scores = json.loads((folder / f"{stage}.json").read_bytes())
+        arms = defaultdict(list)
+        with ZipFile(archive) as source:
+            require(len(source.namelist()) == len(set(source.namelist())), f"{archive}: duplicate timing")
+            for member in source.namelist():
+                d = json.loads(source.read(member))
+                c = d["max_concurrency"]
+                side = "pristine" if "pristine" in member else "candidate"
+                workload = "high_load" if c > 1 else "prefill_heavy" if "prefill" in member else "decode_heavy"
+                arms[side].append(dict(d, workload=workload, evidence=member, profile=f"c{c}" if c > 1 else ""))
+        values = {side: scores_for_side(name, arms[side], pins) for side in SIDES}
+        ratios = [values["candidate"][k] / values["pristine"][k] for k in WORKLOADS]
+        overall = geometric_mean(ratios)
+        native = stage == "official"
+        published = scores["speedup_per_workload" if native else "speedup"]
+        require(all(math.isclose(r, published[k], rel_tol=1e-12) for k, r in zip(WORKLOADS, ratios))
+                and math.isclose(overall, scores["speedup_geomean" if native else "geomean"], rel_tol=1e-12),
+                f"{name}: {stage} differs from raw records")
+        if native or stage == "repeat-1":
+            require(f"{overall:.5f}×" in row, f"{name}: stale README {stage} score")
+        requests = sum(r["completed"] for group in arms.values() for r in group)
+        print(f"{display} H100 optimization {stage}: {overall:.6f}×, {requests:,} timed requests")
+
+
 def main():
     summaries = sorted((ROOT / "tasks").glob("*/results/summary.json"))
     require(len(summaries) == 2, "Expected both campaign tasks")
@@ -345,6 +417,15 @@ def main():
     for outcome in h100:
         verify_h100(outcome)
     print("Checked the pristine-arm comparison tables against both hardware exports.")
+    for outcome in h100:
+        task = ROOT / "tasks" / outcome["task"]
+        key, display = ("gpt", "GPT-OSS-120B") if "gpt_oss" in task.name else ("qwen", "Qwen3.6-27B")
+        baseline = task / "results/h100" / outcome["run_id"]
+        pins = h100_repetitions(json.loads((baseline / "bench.json").read_bytes()))
+        folder = ROOT / "docs/evidence/h100" / key
+        tree = json.loads((baseline / "summary.json").read_bytes())["runtime"]["measured_engine_tree"]
+        require(tree == json.loads((folder / "sealed.json").read_bytes())["base_tree"], "Wrong optimization base")
+        verify_optimization(folder, display, pins)
 
 
 if __name__ == "__main__":
