@@ -374,8 +374,7 @@ def verify_optimization(folder, display, pins):
                 f"{name}: correctness evidence mismatch")
 
     require((folder / "official-timings.zip").is_file(), f"{name}: missing official timing evidence")
-    if name == "qwen":
-        require((folder / "repeat-1-timings.zip").is_file(), "Missing Qwen repeat evidence")
+    require((folder / "repeat-1-timings.zip").is_file(), f"{name}: missing first repeat evidence")
     for result in folder.glob("repeat-[1-3].json"):
         require((folder / f"{result.stem}-timings.zip").is_file(), f"{name}: missing raw timings for {result.stem}")
     for archive in sorted(folder.glob("*-timings.zip")):
@@ -422,8 +421,7 @@ def verify_optimization(folder, display, pins):
             require(reward["correctness"] == 1 and math.isclose(reward["speedup_geomean"], overall)
                     and math.isclose(reward["reward"], max(0.0, overall - 1), abs_tol=1e-12)
                     and reward["reward"] == reward["performance"], f"{name}: inconsistent native reward")
-        if native or stage == "repeat-1":
-            require(f"{overall:.5f}×" in row, f"{name}: stale README {stage} score")
+        require(f"{overall:.5f}×" in row and f"/{name}/{stage}.json)" in row, f"{name}: stale README {stage} score")
         requests = sum(r["completed"] for group in arms.values() for r in group)
         print(f"{display} H100 optimization {stage}: {overall:.6f}×, {requests:,} timed requests")
 

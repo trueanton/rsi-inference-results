@@ -1,0 +1,13 @@
+{
+  "geomean": 1.002343193798566,
+  "order": [
+    "candidate",
+    "pristine"
+  ],
+  "seed": 20261126,
+  "speedup": {
+    "decode_heavy": 0.9976216828254593,
+    "high_load": 1.0044428700035772,
+    "prefill_heavy": 1.0049818470122807
+  }
+}

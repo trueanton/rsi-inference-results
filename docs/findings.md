@@ -1,6 +1,6 @@
 # H100 coding-agent optimization
 
-One local GPT-OSS-120B solver attempt ran for each of Apple’s two original H100 inference tasks. Both produced an engine patch. Qwen passed correctness with no measured speedup. GPT-OSS passed native correctness and scored 0.98748× in the official verifier. Its separate verification run was still in progress on 26 November 2026 at 12:27 UTC. [Job accounting](evidence/h100/slurm.csv)
+One local GPT-OSS-120B solver attempt ran for each of Apple’s two original H100 inference tasks. Both produced an engine patch and passed native and public correctness. The official scores were 0.99961× for Qwen and 0.98748× for GPT-OSS. The tables include all completed independent pairs as of 26 November 2026 at 13:57 UTC. [Job accounting](evidence/h100/slurm.csv)
 
 ## Targets and baselines
 
@@ -43,33 +43,41 @@ The operator added explicit Harmony stop IDs `200002` and `200012` to recover th
 
 The frozen patch changes `vllm/v1/attention/backends/triton_attn.py`, increasing parallel softmax segments from 16 to 32. Its SHA-256 is `a1e40ae3773939c89df436b815b31dc2865519418656c5f2c86b0509ecbe3405`. The native verifier classified it as `source_edit`. All three measured candidate workloads selected FlashAttention 3. The 2–3% gain claimed in the patch comment has no support in these measurements. [Patch](evidence/h100/qwen/candidate.patch) · [Base and replay tree](evidence/h100/qwen/sealed.json) · [Runtime backend selections](evidence/h100/qwen/engine-startups.json)
 
-Job **546421** completed on one H100 with exit `0:0`. The official teacher-forced gate passed **9,903/9,954** positions across 100 prompts. The separate public check passed **1,988/1,997** across 20 prompts. The native verifier awarded **0.0 reward**. Both timing comparisons below completed 2,052 timed requests per arm, with zero failed requests. Correctness was established by the teacher-forced checks. [Official correctness](evidence/h100/qwen/official-correctness.json) · [Public correctness](evidence/h100/qwen/public-correctness.json) · [Native verifier excerpt](evidence/h100/qwen/verifier-excerpt.txt) · [Reward](evidence/h100/qwen/reward.json)
+Job **546421** completed on one H100 with exit `0:0`. The official teacher-forced gate passed **9,903/9,954** positions across 100 prompts. The separate public check passed **1,988/1,997** across 20 prompts. The native verifier awarded **0.0 reward**. Each timing comparison below completed 2,052 timed requests per arm, with zero failed requests. Correctness was established by the teacher-forced checks. [Official correctness](evidence/h100/qwen/official-correctness.json) · [Public correctness](evidence/h100/qwen/public-correctness.json) · [Native verifier excerpt](evidence/h100/qwen/verifier-excerpt.txt) · [Reward](evidence/h100/qwen/reward.json)
 
-| Candidate / pristine | Decode | Prefill | High load | Overall |
-| --- | ---: | ---: | ---: | ---: |
-| [Official verifier](evidence/h100/qwen/official.json) | 1.001369× | 0.996191× | 1.001289× | **0.999613×** |
-| [Independent repeat 1](evidence/h100/qwen/repeat-1.json) | 1.000880× | 0.998675× | 1.000573× | **1.000042×** |
+| Measurement | Order | Decode | Prefill | High load | Overall | Timed requests / failures |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| [Official verifier](evidence/h100/qwen/official.json) | Per workload | 1.001369× | 0.996191× | 1.001289× | **0.999613×** | 4,104 / 0 |
+| [Repeat 1](evidence/h100/qwen/repeat-1.json) · [job 546421](evidence/h100/qwen/repeat-1-provenance.json) | candidate → pristine | 1.000880× | 0.998675× | 1.000573× | **1.000042×** | 4,104 / 0 |
 
-**Correctness passed; no measured speedup.** These two comparisons provide no confidence interval or equivalence bound. The agent also benchmarked an earlier eight-segment tree during optimization. The table evaluates the frozen 32-segment submission. [Official timed records](evidence/h100/qwen/official-timings.zip) · [Repeat timed records](evidence/h100/qwen/repeat-1-timings.zip)
+[Repeat 1 raw timings](evidence/h100/qwen/repeat-1-timings.zip)
+
+**Correctness passed; no measured speedup.** The reported ratios carry no confidence interval or equivalence bound. The agent also benchmarked an earlier eight-segment tree during optimization. The table evaluates the frozen 32-segment submission. [Official timed records](evidence/h100/qwen/official-timings.zip) · [Repeat timed records](evidence/h100/qwen/repeat-1-timings.zip)
 
 ## GPT submission
 
 The patch sets the default KV block size to **64** in `vllm/config/cache.py`, even though its comment says 32. It sets the default model length to **2,048** in `vllm/engine/arg_utils.py`, enables TF32 matmul and cuDNN benchmarking in `vllm/v1/engine/llm_engine.py`, and adds a short generation script, `test_llm.py`. The serving verifier explicitly supplies a maximum model length of 16,384. The patch SHA-256 is `aeab2417beaa080e9862019a5ca334ae75fb24f6a61ee2e3e601ea6c6097c141`. [Patch](evidence/h100/gpt/candidate.patch) · [Base and replay tree](evidence/h100/gpt/sealed.json) · [Server startup evidence](evidence/h100/gpt/engine-startups.json)
 
-Job **546422** replayed the frozen tree on two H100s. Native correctness passed **9,917/9,918** positions across 100 prompts. The reference process exited on signal 6 after writing its output. The pinned verifier validated the file and continued. The official verifier classified the patch as `mixed` and awarded **0 reward**. Each timed arm finished 2,824 requests with zero failures. The agent’s earlier development measurement used a tree without the final cuDNN setting. The separate public correctness check passed 1,998 of 2,000 positions across 20 prompts. [Public correctness](evidence/h100/gpt/public-correctness.json) · [Official timings](evidence/h100/gpt/official-timings.zip) · [Reward](evidence/h100/gpt/reward.json) · [Native correctness](evidence/h100/gpt/official-correctness.json) · [Verifier excerpt](evidence/h100/gpt/verifier-excerpt.txt) · [Slurm status](evidence/h100/slurm.csv)
+Job **546422** completed on two H100s on `m2-xe117` with exit `0:0`. Native correctness passed **9,917/9,918** positions across 100 prompts. The reference process exited on signal 6 after writing its output. The pinned verifier validated the file and continued. The official verifier classified the patch as `mixed` and awarded **0 reward**. Each timed arm finished 2,824 requests with zero failures. The agent’s earlier development measurement used a tree without the final cuDNN setting. The separate public correctness check passed 1,998 of 2,000 positions across 20 prompts. [Public correctness](evidence/h100/gpt/public-correctness.json) · [Official timings](evidence/h100/gpt/official-timings.zip) · [Reward](evidence/h100/gpt/reward.json) · [Native correctness](evidence/h100/gpt/official-correctness.json) · [Verifier excerpt](evidence/h100/gpt/verifier-excerpt.txt) · [Slurm status](evidence/h100/slurm.csv)
 
-| Candidate / pristine | Decode | Prefill | High load | Overall | Completed timed requests / failures |
-| --- | --- | --- | --- | --- | --- |
-| [Official verifier](evidence/h100/gpt/official.json) | 0.975983× | 0.991077× | 0.995489× | **0.987481×** | 5,648 / 0 |
-| Independent repeat | Pending | Pending | Pending | Pending | Pending final record |
+| Measurement | Order | Decode | Prefill | High load | Overall | Timed requests / failures |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| [Official verifier](evidence/h100/gpt/official.json) | Per workload | 0.975983× | 0.991077× | 0.995489× | **0.987481×** | 5,648 / 0 |
+| [Repeat 1](evidence/h100/gpt/repeat-1.json) · [job 546422](evidence/h100/gpt/repeat-1-provenance.json) | candidate → pristine | 0.997622× | 1.004982× | 1.004443× | **1.002343×** | 5,648 / 0 |
+
+[Repeat 1 raw timings](evidence/h100/gpt/repeat-1-timings.zip)
 
 All eight measured server startups selected FlashAttention 3 and the Triton MXFP4 MoE backend. Each reported 28.61 GiB available for the KV cache. The candidate allocated capacity for 833,408 tokens and pristine for 833,424, consistent with the change from 16 to 64 tokens per cache block. Both used the verifier’s 16,384-token context. Attribution to an individual edit would require an ablation. [Engine startups](evidence/h100/gpt/engine-startups.json)
 
+The four official GPT decode boots delivered 206.23 and 205.97 output tokens/s for the candidate, and 216.54 and 206.01 for pristine. One fast pristine boot accounts for most of the official decode gap. The two-boot sample and the timing variation seen on this H100 pair limit attribution. [Official decode records](evidence/h100/gpt/official-timings.zip) · [Unchanged-engine timing control](evidence/h100/gpt-decode-control.json)
+
 ## Measurement and artifact access
 
-Each candidate was replayed from its sealed patch against the qualified engine tree. The native verifier ran the pinned task’s original tests. The independent repeat used the public benchmark helper in separate clean workspaces under the same operator, with the same physical GPUs and seed for both arms. In the first repeat, candidate ran before pristine with seed 20261126. The protocol schedules two more pairs for eligible correct submissions, reversing arm order in the second. Later pairs had no published measurements at this snapshot. [First pair design and scores](evidence/h100/qwen/repeat-1.json) · [Qualification workload definitions](h100.md#pristine-arm-throughput-and-latency)
+Each candidate was replayed from its sealed patch against the qualified engine tree. The native verifier ran the pinned task’s original tests. The independent repeat used the public benchmark helper in separate clean workspaces under the same operator, with the same physical GPUs and seed for both arms. In the first repeat, candidate ran before pristine with seed 20261126. The protocol calls for three separate pairs per eligible submission, including negative outcomes. The second pair reverses arm order. The seeds are 20261126, 20261127 and 20261128 in rounds one through three. [First pair design and scores](evidence/h100/qwen/repeat-1.json) · [Qualification workload definitions](h100.md#pristine-arm-throughput-and-latency)
 
 Decode scores inverse median time per output token, and prefill scores inverse median time to first token. High-load scores use the geometric mean of request rates at concurrency 16, 32 and 64. The final ratio is the geometric mean of the three workload ratios. Each decode repetition has only four requests. Order, warmup and the observed GPT timing variation limit interpretation of small differences. [Measurement definitions](acceptance/README.md) · [GPT phase control](evidence/h100/gpt-decode-control.json)
+
+Slurm assigned jobs 547025 and 547026 to Qwen rounds two and three, and 547027 and 547028 to GPT-OSS. They run in sequence on `m2-xe117`. After the final pair, job 547030 checks whether a positive overall and decode ratio in the official run or the three-repeat aggregate calls for a matched-phase GPT decode diagnostic. [Job accounting](evidence/h100/slurm.csv) · [Diagnostic decision](evidence/h100/gpt/phase-review.json)
 
 The timed JSONs omit generated text for all 18 Qwen and 26 GPT-OSS measurements in the official runs. This leaves the verifier’s optional output-shape diagnostic without sampled completions. The correctness verdicts come from the separate teacher-forced comparisons. [Qwen verifier coverage](evidence/h100/qwen/official.json) · [GPT-OSS verifier coverage](evidence/h100/gpt/official.json)
 

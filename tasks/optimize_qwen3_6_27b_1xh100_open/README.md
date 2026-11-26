@@ -2,7 +2,7 @@
 
 `optimize_qwen3_6_27b_1xh100_open`
 
-Correctness passed; no measured speedup. The pinned verifier scored **0.99961×**. The first independent repeat measured **1.00004×**. [Optimization report](../../docs/findings.md#qwen-submission) · [Submitted patch](../../docs/evidence/h100/qwen/candidate.patch)
+Correctness passed; no measured speedup. The official score was **0.99961×**. The separate paired ratios in run order were [1.00004×](../../docs/evidence/h100/qwen/repeat-1.json). [Optimization report](../../docs/findings.md#qwen-submission) · [Submitted patch](../../docs/evidence/h100/qwen/candidate.patch)
 
 ## H100 qualification
 
