@@ -8,6 +8,15 @@
     ],
     "max_model_len": [
       "16384"
+    ],
+    "gpu_kv_cache_tokens": [
+      833408
+    ],
+    "available_kv_cache_gib": [
+      28.61
+    ],
+    "mxfp4_moe_backend": [
+      "TRITON"
     ]
   },
   "vllm_serve_decode_heavy_cand_boot1_51519.log": {
@@ -19,6 +28,15 @@
     ],
     "max_model_len": [
       "16384"
+    ],
+    "gpu_kv_cache_tokens": [
+      833408
+    ],
+    "available_kv_cache_gib": [
+      28.61
+    ],
+    "mxfp4_moe_backend": [
+      "TRITON"
     ]
   },
   "vllm_serve_decode_heavy_pristine_boot0_50191.log": {
@@ -30,6 +48,15 @@
     ],
     "max_model_len": [
       "16384"
+    ],
+    "gpu_kv_cache_tokens": [
+      833424
+    ],
+    "available_kv_cache_gib": [
+      28.61
+    ],
+    "mxfp4_moe_backend": [
+      "TRITON"
     ]
   },
   "vllm_serve_decode_heavy_pristine_boot1_50057.log": {
@@ -41,6 +68,55 @@
     ],
     "max_model_len": [
       "16384"
+    ],
+    "gpu_kv_cache_tokens": [
+      833424
+    ],
+    "available_kv_cache_gib": [
+      28.61
+    ],
+    "mxfp4_moe_backend": [
+      "TRITON"
+    ]
+  },
+  "vllm_serve_high_load_cand_45007.log": {
+    "attention": [
+      "FLASH_ATTN"
+    ],
+    "flashattention_version": [
+      "3"
+    ],
+    "max_model_len": [
+      "16384"
+    ],
+    "gpu_kv_cache_tokens": [
+      833408
+    ],
+    "available_kv_cache_gib": [
+      28.61
+    ],
+    "mxfp4_moe_backend": [
+      "TRITON"
+    ]
+  },
+  "vllm_serve_high_load_pristine_60153.log": {
+    "attention": [
+      "FLASH_ATTN"
+    ],
+    "flashattention_version": [
+      "3"
+    ],
+    "max_model_len": [
+      "16384"
+    ],
+    "gpu_kv_cache_tokens": [
+      833424
+    ],
+    "available_kv_cache_gib": [
+      28.61
+    ],
+    "mxfp4_moe_backend": [
+      "TRITON"
     ]
   },
   "vllm_serve_prefill_heavy_cand_33019.log": {
@@ -52,6 +128,35 @@
     ],
     "max_model_len": [
       "16384"
+    ],
+    "gpu_kv_cache_tokens": [
+      833408
+    ],
+    "available_kv_cache_gib": [
+      28.61
+    ],
+    "mxfp4_moe_backend": [
+      "TRITON"
+    ]
+  },
+  "vllm_serve_prefill_heavy_pristine_59301.log": {
+    "attention": [
+      "FLASH_ATTN"
+    ],
+    "flashattention_version": [
+      "3"
+    ],
+    "max_model_len": [
+      "16384"
+    ],
+    "gpu_kv_cache_tokens": [
+      833424
+    ],
+    "available_kv_cache_gib": [
+      28.61
+    ],
+    "mxfp4_moe_backend": [
+      "TRITON"
     ]
   }
 }

@@ -359,7 +359,7 @@ def verify_optimization(folder, display, pins):
     row, = [line for line in readme if line.startswith(f"| [{display} ·")]
     for gate in ("official", "public"):
         path = folder / f"{gate}-correctness.json"
-        if gate == "public" and name == "gpt" and not path.exists():
+        if gate == "public" and name == "gpt" and not path.exists() and not (folder / "repeat-1.json").exists():
             continue
         correctness = json.loads(path.read_bytes())
         prompts = correctness["per_prompt"]
@@ -375,17 +375,39 @@ def verify_optimization(folder, display, pins):
         require(correctness["correctness_ok"] and math.isclose(passed / total, correctness["overall_pass_rate"]),
                 f"{name}: correctness evidence mismatch")
 
+    require((folder / "official-timings.zip").is_file(), f"{name}: missing official timing evidence")
     if name == "qwen":
-        require((folder / "official-timings.zip").exists() and (folder / "repeat-1-timings.zip").exists(),
-                "Missing Qwen verification evidence")
+        require((folder / "repeat-1-timings.zip").is_file(), "Missing Qwen repeat evidence")
+    for result in folder.glob("repeat-[1-3].json"):
+        require((folder / f"{result.stem}-timings.zip").is_file(), f"{name}: missing raw timings for {result.stem}")
     for archive in sorted(folder.glob("*-timings.zip")):
         stage = archive.name.removesuffix("-timings.zip")
         scores = json.loads((folder / f"{stage}.json").read_bytes())
+        native = stage == "official"
         arms = defaultdict(list)
         with ZipFile(archive) as source:
             require(len(source.namelist()) == len(set(source.namelist())), f"{archive}: duplicate timing")
+            if not native:
+                provenance = json.loads((folder / f"{stage}-provenance.json").read_bytes())
+                number = int(stage.removeprefix("repeat-"))
+                order = list(reversed(SIDES)) if number == 2 else list(SIDES)
+                require(provenance["round"] == number and provenance["arm_order"] == scores["order"] == order
+                        and provenance["seed"] == scores["seed"] == 20261125 + number,
+                        f"{name}: {stage} has inconsistent order or seed")
+                require(provenance["same_physical_devices"] is True and provenance["h100_count"] == (2 if name == "gpt" else 1)
+                        and provenance["patch_sha256"] == sealed["patch_sha256"], f"{name}: {stage} allocation or patch mismatch")
+                expected_hashes = {}
+                for side, field in (("candidate", "candidate_tree"), ("pristine", "base_tree")):
+                    arm = provenance["arms"][side]
+                    require(arm["tree"] == sealed[field] and all(path.startswith(side + "/") for path in arm["timings"]),
+                            f"{name}: {stage} {side} provenance mismatch")
+                    expected_hashes.update(arm["timings"])
+                require(set(expected_hashes) == set(source.namelist()), f"{name}: {stage} raw file list mismatch")
             for member in source.namelist():
-                d = json.loads(source.read(member))
+                raw = source.read(member)
+                if not native:
+                    require(hashlib.sha256(raw).hexdigest() == expected_hashes[member], f"{name}: {stage} checksum mismatch for {member}")
+                d = json.loads(raw)
                 c = d["max_concurrency"]
                 side = "pristine" if "pristine" in member else "candidate"
                 workload = "high_load" if c > 1 else "prefill_heavy" if "prefill" in member else "decode_heavy"
@@ -393,11 +415,15 @@ def verify_optimization(folder, display, pins):
         values = {side: scores_for_side(name, arms[side], pins) for side in SIDES}
         ratios = [values["candidate"][k] / values["pristine"][k] for k in WORKLOADS]
         overall = geometric_mean(ratios)
-        native = stage == "official"
         published = scores["speedup_per_workload" if native else "speedup"]
         require(all(math.isclose(r, published[k], rel_tol=1e-12) for k, r in zip(WORKLOADS, ratios))
                 and math.isclose(overall, scores["speedup_geomean" if native else "geomean"], rel_tol=1e-12),
                 f"{name}: {stage} differs from raw records")
+        if native:
+            reward = json.loads((folder / "reward.json").read_bytes())
+            require(reward["correctness"] == 1 and math.isclose(reward["speedup_geomean"], overall)
+                    and math.isclose(reward["reward"], max(0.0, overall - 1), abs_tol=1e-12)
+                    and reward["reward"] == reward["performance"], f"{name}: inconsistent native reward")
         if native or stage == "repeat-1":
             require(f"{overall:.5f}×" in row, f"{name}: stale README {stage} score")
         requests = sum(r["completed"] for group in arms.values() for r in group)

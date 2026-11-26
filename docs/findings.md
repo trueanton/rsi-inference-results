@@ -1,6 +1,6 @@
 # H100 coding-agent optimization
 
-One local GPT-OSS-120B solver attempt ran for each of Apple’s two original H100 inference tasks. Both produced an engine patch. Qwen passed correctness with no measured speedup. GPT-OSS passed native correctness and was still undergoing performance verification at the 26 November 2026, 11:36 UTC snapshot. [Job accounting](evidence/h100/slurm.csv)
+One local GPT-OSS-120B solver attempt ran for each of Apple’s two original H100 inference tasks. Both produced an engine patch. Qwen passed correctness with no measured speedup. GPT-OSS passed native correctness and scored 0.98748× in the official verifier. Its separate verification run was still in progress on 26 November 2026 at 12:18 UTC. [Job accounting](evidence/h100/slurm.csv)
 
 ## Targets and baselines
 
@@ -56,12 +56,14 @@ Job **546421** completed on one H100 with exit `0:0`. The official teacher-force
 
 The patch sets the default KV block size to **64** in `vllm/config/cache.py`, even though its comment says 32. It sets the default model length to **2,048** in `vllm/engine/arg_utils.py`, enables TF32 matmul and cuDNN benchmarking in `vllm/v1/engine/llm_engine.py`, and adds a short generation script, `test_llm.py`. The serving verifier explicitly supplies a maximum model length of 16,384. The patch SHA-256 is `aeab2417beaa080e9862019a5ca334ae75fb24f6a61ee2e3e601ea6c6097c141`. [Patch](evidence/h100/gpt/candidate.patch) · [Base and replay tree](evidence/h100/gpt/sealed.json) · [Server startup evidence](evidence/h100/gpt/engine-startups.json)
 
-Job **546422** replayed the frozen tree on two H100s. Native correctness passed **9,917/9,918** positions across 100 prompts. The reference process exited on signal 6 after writing its output. The pinned verifier validated the file and continued. At the snapshot, the separate public correctness check, official performance result and independent repeat were pending. The agent’s earlier development measurement used a tree without the final cuDNN setting. [Native correctness](evidence/h100/gpt/official-correctness.json) · [Verifier excerpt](evidence/h100/gpt/verifier-excerpt.txt) · [Slurm status](evidence/h100/slurm.csv)
+Job **546422** replayed the frozen tree on two H100s. Native correctness passed **9,917/9,918** positions across 100 prompts. The reference process exited on signal 6 after writing its output. The pinned verifier validated the file and continued. The official verifier classified the patch as `mixed` and awarded **0 reward**. Each timed arm finished 2,824 requests with zero failures. The agent’s earlier development measurement used a tree without the final cuDNN setting. Separate verification is in progress. [Official timings](evidence/h100/gpt/official-timings.zip) · [Reward](evidence/h100/gpt/reward.json) · [Native correctness](evidence/h100/gpt/official-correctness.json) · [Verifier excerpt](evidence/h100/gpt/verifier-excerpt.txt) · [Slurm status](evidence/h100/slurm.csv)
 
 | Candidate / pristine | Decode | Prefill | High load | Overall | Completed timed requests / failures |
 | --- | --- | --- | --- | --- | --- |
-| Official verifier | Pending | Pending | Pending | Pending | Pending final record |
+| [Official verifier](evidence/h100/gpt/official.json) | 0.975983× | 0.991077× | 0.995489× | **0.987481×** | 5,648 / 0 |
 | Independent repeat | Pending | Pending | Pending | Pending | Pending final record |
+
+All eight measured server startups selected FlashAttention 3 and the Triton MXFP4 MoE backend. Each reported 28.61 GiB available for the KV cache. The candidate allocated capacity for 833,408 tokens and pristine for 833,424, consistent with the change from 16 to 64 tokens per cache block. Both used the verifier’s 16,384-token context. Attribution to an individual edit would require an ablation. [Engine startups](evidence/h100/gpt/engine-startups.json)
 
 ## Measurement and artifact access
 

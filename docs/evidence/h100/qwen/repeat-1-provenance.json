@@ -1,0 +1,45 @@
+{
+  "job": "546421",
+  "node": "m2-xe117",
+  "same_physical_devices": true,
+  "h100_count": 1,
+  "round": 1,
+  "seed": 20261126,
+  "arm_order": [
+    "candidate",
+    "pristine"
+  ],
+  "patch_sha256": "a1e40ae3773939c89df436b815b31dc2865519418656c5f2c86b0509ecbe3405",
+  "arms": {
+    "candidate": {
+      "tree": "9aea45fa61a4920e01c55135283d83943d0c66a4",
+      "slurm_step": "2",
+      "timings": {
+        "candidate/boot-00.json": "b33845b49f9bf2f4fdd7bbbb77d312aec405e4a44d845bb415695637c4196dc3",
+        "candidate/bench_candidate_prefill_heavy_meas0.json": "6b11e8ae2c4fd67e3efd72f9e12c58d5656fea9095c63351cf842b1bbe7835cc",
+        "candidate/bench_candidate_prefill_heavy_meas1.json": "2cb700e48922474625d130e2cc564b4bc9da503b513e3552bb2db39a0ed8e99e",
+        "candidate/bench_candidate_prefill_heavy_meas2.json": "be3bea10ae7276e3e5756ef7b71e05230295859c52d076ee84c97b88633722cd",
+        "candidate/bench_candidate_prefill_heavy_meas3.json": "0c13dc9e1f9200a1e4f351d1617156a0ec18481427d06682bd3b64681a7ad96e",
+        "candidate/bench_candidate_prefill_heavy_meas4.json": "8246513e3265b27fac80477b636f13c31fccaa90de4e1bb43738a400e0db2a85",
+        "candidate/bench_high_load_candidate_c16_meas0.json": "edfeb7f1c5401900e2dd7a6d36baca3050a286f975b743012074b2b5dc977394",
+        "candidate/bench_high_load_candidate_c32_meas0.json": "fcf732e00f21252aa166c6b94e627c544f3ead97db0fcb62edb3471b7fac1a7f",
+        "candidate/bench_high_load_candidate_c64_meas0.json": "16ad8419bf7f738a5f885f4e38279bda06488947f84454cf34b42a984bedf1e0"
+      }
+    },
+    "pristine": {
+      "tree": "a69e2f27fcaaeab14a5dd83d5477d5483156ce5e",
+      "slurm_step": "3",
+      "timings": {
+        "pristine/boot-00.json": "0df83dacd698fa68cf4f6daacc8126fe6e831daf315927bb16d5cf101c246163",
+        "pristine/bench_candidate_prefill_heavy_meas0.json": "ffa820f8b54ab0c9a95f1b73ede3ea94ba592165c3a874b3bae6e7974c1b6799",
+        "pristine/bench_candidate_prefill_heavy_meas1.json": "d21b668382075909066507c0c184df9c6dc558b59e3db4d8146f6fec44f98379",
+        "pristine/bench_candidate_prefill_heavy_meas2.json": "14048cc461d55ead84152958056400e2fbeb1ce2d1ad040e81f8308de5dc5201",
+        "pristine/bench_candidate_prefill_heavy_meas3.json": "1a2a1cc8975a0ca7afa1f5fe7d6624ebb304f3ca59de04881939549c415817c0",
+        "pristine/bench_candidate_prefill_heavy_meas4.json": "d40eb937a1a3fc0a2deb2c0f754122e8fbaec188b1a5dd8bcf7fec312f3d7410",
+        "pristine/bench_high_load_candidate_c16_meas0.json": "d10e240a318d7abef114adb4df0a88fb27e4b16eefd7ac0777cf3831b5e2061e",
+        "pristine/bench_high_load_candidate_c32_meas0.json": "914581cf6d6a250b0d77f6f5acf0217593ac025054b204ce6abc213a2e7f4ea9",
+        "pristine/bench_high_load_candidate_c64_meas0.json": "631bb52ff354b22e7e0d251b8d70c27670b022b87d561ac7749ab570520802d0"
+      }
+    }
+  }
+}

@@ -2,7 +2,7 @@
 
 `optimize_gpt_oss_120b_2xh100_open`
 
-The frozen patch passed native correctness on **9,917 of 9,918 positions**. Official and repeat performance are pending in verification job 546422. [Optimization report](../../docs/findings.md#gpt-submission) · [Submitted patch](../../docs/evidence/h100/gpt/candidate.patch)
+The frozen patch passed native correctness on **9,917 of 9,918 positions**. The official score was **0.98748×** across 5,648 timed requests. The separate paired repeat is pending in job 546422. [Official scores](../../docs/evidence/h100/gpt/official.json) · [Timed records](../../docs/evidence/h100/gpt/official-timings.zip) · [Optimization report](../../docs/findings.md#gpt-submission) · [Submitted patch](../../docs/evidence/h100/gpt/candidate.patch)
 
 ## H100 qualification
 

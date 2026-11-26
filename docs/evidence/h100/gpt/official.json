@@ -1,0 +1,59 @@
+{
+  "source_sha256": "69543d6b81ec32574f2f0dec9f6235291a55ea6807ec3e8c09e48eaaf8f70558",
+  "classification_kind": "mixed",
+  "speedup_geomean": 0.9874809405078983,
+  "speedup_per_workload": {
+    "decode_heavy": 0.9759830354870114,
+    "high_load": 0.9954885910919581,
+    "prefill_heavy": 0.9910774849936587
+  },
+  "primary_metric_per_workload": {
+    "decode_heavy": "tpot_ms",
+    "high_load": "request_throughput",
+    "prefill_heavy": "ttft_ms"
+  },
+  "candidate_tps_runs": {
+    "decode_heavy": [
+      206.58525826677968,
+      206.32758880044165
+    ],
+    "high_load": [
+      2.8784132573784236,
+      2.9544751135742096
+    ],
+    "prefill_heavy": [
+      6.202713824796014,
+      6.182210060370195,
+      6.143131707688493,
+      6.153861368939249,
+      6.129339346818061
+    ]
+  },
+  "pristine_tps_runs": {
+    "decode_heavy": [
+      216.74423024895398,
+      206.3295651487084
+    ],
+    "high_load": [
+      2.928363254580013,
+      2.930958914601754
+    ],
+    "prefill_heavy": [
+      6.216526116285344,
+      6.2113938806917774,
+      6.219580367002927,
+      6.13572094648652,
+      6.217648504779504
+    ]
+  },
+  "candidate_tps_per_workload": {
+    "decode_heavy": 206.45642353361066,
+    "high_load": 2.9164441854763163,
+    "prefill_heavy": 6.159734378999312
+  },
+  "pristine_tps_per_workload": {
+    "decode_heavy": 211.53689769883118,
+    "high_load": 2.9296610845908835,
+    "prefill_heavy": 6.2151895005855415
+  }
+}
